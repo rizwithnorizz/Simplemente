@@ -97,13 +97,13 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
 
                     handleQuantityChange(quant - 1);
                   }}
-                  className="btn btn-primary text-white">
-                    <Minus size={24} />
+                  className="btn btn-primary btn-sm text-white">
+                    <Minus size={18} />
                   </button>
                   <input
                     type="number"
                     name="quantity"
-                    className="text-primary font-bold p-2 border-primary border-2 rounded-xl text-center"
+                    className="text-primary w-1/3 font-bold p-2 border-primary border-2 rounded-xl text-center"
                     value={quant}
                     onChange={(e) => {
                       if (quant < 1) return;
@@ -115,8 +115,8 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                   onClick={() => {
                     handleQuantityChange(quant + 1);
                   }}
-                  className="btn btn-primary text-white">
-                    <Plus size={24} />
+                  className="btn btn-primary btn-sm text-white">
+                    <Plus size={18} />
                   </button>
                 </div>
               </div>

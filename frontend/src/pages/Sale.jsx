@@ -4,49 +4,135 @@ import api from "../utils/axios.js";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import { Minus, Plus } from "lucide-react";
+import toast from "react-hot-toast";
 const Sale = () => {
   const { eventID } = useParams();
   const location = useLocation();
   const eventPathMatch = location.pathname.match(/^\/event\/([^/]+)/);
   const currentEventID = eventPathMatch ? eventPathMatch[1] : null;
   const [products, setProducts] = useState([]);
+
   const getAllMerch = async () => {
     try {
       const res = await api.get(`/api/merch/${currentEventID}`);
       setProducts(res.data);
-      console.log(res.data);
-    } catch (error) {}
+    } catch (error) {
+        console.log(error);
+    }
   };
 
   const [cart, setCart] = useState([]);
 
-  const addToCart = (item) => {
-    const existingItem = cart.find((cartItem) => cartItem._id === item._id);
-    if (existingItem) {
-      const updatedCart = cart.map((cartItem) => {
-        if (cartItem._id === item._id) {
-          return { ...cartItem, quantity: cartItem.quantity + 1 };
-        }
-        return cartItem;
-      });
-      setCart(updatedCart);
-    } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
+const addToCart = (item) => {
+    const product = products.find((prod) => prod._id === item.product);
+    console.log(product);
+    if (!product || product.quantity <= 0) {
+        toast.error("No more stock available!");
+        return;
     }
 
     const updateProduct = products.map((prod) => {
-      if (prod._id === item._id) {
-        return { ...prod, quantity: prod.quantity - 1 };
-      }
-      return prod;
+        if (prod._id === item.product) {
+            return { ...prod, quantity: prod.quantity - 1 };
+        }
+        return prod;
     });
     setProducts(updateProduct);
-  };
+
+    const existingItem = cart.find((cartItem) => cartItem.product === item.product);
+    if (existingItem) {
+        const updatedCart = cart.map((cartItem) => {
+            if (cartItem.product === item.product) {
+                return { ...cartItem, quantity: cartItem.quantity + 1 };
+            }
+            return cartItem;
+        });
+        setCart(updatedCart);
+    } else {
+        setCart([...cart, { ...item, quantity: 1 }]);
+    }
+};
+
+const changeCartQuantity = (itemId, newQuantity) => {
+    const updatedCart = cart
+        .map((cartItem) => {
+            if (cartItem.product === itemId) {
+                // If reducing to zero, return quantity to products
+                if (cartItem.quantity === 1 && newQuantity === 0) {
+                    const newProd = products.map((prod) => {
+                        if (prod._id === itemId) {
+                            return { ...prod, quantity: prod.quantity + 1 };
+                        }
+                        return prod;
+                    });
+                    setProducts(newProd);
+                    return null; // Remove from cart
+                }
+                // If increasing, decrease product stock
+                if (newQuantity > cartItem.quantity) {
+                    const product = products.find((prod) => prod._id === itemId);
+                    if (!product || product.quantity <= 0) {
+                        toast.error("No more stock available!");
+                        return cartItem;
+                    }
+                    const newProd = products.map((prod) => {
+                        if (prod._id === itemId && prod.quantity > 0) {
+                            return { ...prod, quantity: prod.quantity - 1 };
+                        }
+                        return prod;
+                    });
+                    setProducts(newProd);
+                }
+                // If decreasing but not removing, increase product stock
+                if (newQuantity < cartItem.quantity && newQuantity > 0) {
+                    const newProd = products.map((prod) => {
+                        if (prod._id === itemId) {
+                            return { ...prod, quantity: prod.quantity + 1 };
+                        }
+                        return prod;
+                    });
+                    setProducts(newProd);
+                }
+                return { ...cartItem, quantity: newQuantity };
+            }
+            return cartItem;
+        })
+        .filter((cartItem) => cartItem && cartItem.quantity > 0);
+    setCart(updatedCart);
+};
+
+    const handlePlaceOrder = async () => {  
+        if (cart.length === 0) {
+            toast.error("Cart is empty!");
+            return;
+        }
+        try {
+            const orderItems = cart.map(item => ({
+                product: item.product,
+                price: item.price,
+                quantity: item.quantity
+            }));
+            console.log(orderItems);
+            await api.post(`/api/sale/${currentEventID}`, { products: orderItems });
+            toast.success("Order placed successfully!");
+            setCart([]);
+            getAllMerch();
+        } catch (error) {
+            toast.error("Error placing order");
+        }   
+    };
   useEffect(() => {
     getAllMerch();
   }, []);
 
+const handleTotal = () => {
+    let total = 0;
+    cart.forEach((item) => {
+      total += item.price * item.quantity;
+    });
+    return total;
+}
   return (
     <Layout>
       <h1 className="font-bold text-pink-500 text-4xl mb-4">Sale</h1>
@@ -59,7 +145,7 @@ const Sale = () => {
 
           {/* Product Grid */}
 
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-5 p-4">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-5 p-4">
             {products.map((item) => (
               <div
                 key={item._id}
@@ -88,8 +174,8 @@ const Sale = () => {
                       className="btn btn-primary btn-sm text-white"
                       onClick={() =>
                         addToCart({
-                          _id: item._id,
                           name: item.product.name,
+                          product: item._id,
                           price: item.product.orig_price + item.product.markup,
                           quantity: 1,
                         })
@@ -110,7 +196,7 @@ const Sale = () => {
             {cart !== null ? (
               cart.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.product}
                   className="flex flex-col bg-white shadow-md  hover:shadow-xl rounded-xl p-4 mb-2 w-full"
                 >
                   <span className="text-primary font-bold">
@@ -119,21 +205,36 @@ const Sale = () => {
                   <span className="text-accent font-bold text-4xl">
                     {`₱` + item.price * item.quantity}
                   </span>
-                  <div className="p-2 mb-2 bg-accent bg-opacity-10 rounded-xl">
-                    <span className="text-accent font-bold text-md">
-                      {item.quantity}
-                    </span>
+                  <div className="flex justify-center items-center gap-2">
+                    <button 
+                    onClick={() => {changeCartQuantity(item.product, item.quantity - 1)}}
+                    className="flex justify-center items-center btn btn-primary btn-sm text-white">
+                      <Minus size={18} />
+                    </button>
+                    <div className="p-2 bg-accent bg-opacity-10 rounded-xl w-1/3 text-center">
+                      <span className="text-accent font-bold text-md">
+                        {item.quantity}
+                      </span>
+                    </div>
+                    <button 
+                    onClick={() => {changeCartQuantity(item.product, item.quantity + 1)}}
+                    className="flex justify-center items-center btn btn-primary btn-sm text-white">
+                      <Plus size={18} />
+                    </button>
                   </div>
                 </div>
               ))
-              
             ) : (
               <span className="text-primary">Cart is empty</span>
             )}
-            
-            <div className="fixed bottom-10 lg:w-[27svw] w-[30svw] bg-white p-4 rounded-xl shadow-md flex flex-col gap-4">
-              <span className="text-accent font-bold text-xl">Total: ₱</span>
-              <button className="btn btn-primary text-white">Place Order</button>
+
+            <div className="fixed bottom-10 md:w-[28svw] w-[28svw] lg:w-[22svw] bg-white p-4 rounded-xl shadow-md flex flex-col gap-4">
+              <span className="text-accent font-bold text-xl">Total: ₱ { handleTotal() }</span>
+              <button 
+              onClick={handlePlaceOrder}
+              className="btn btn-primary text-white">
+                Place Order
+              </button>
             </div>
           </div>
 

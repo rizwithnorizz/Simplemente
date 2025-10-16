@@ -17,12 +17,17 @@ export async function transact(req, res){
             return res.status(400).json({ message: "Products must be an array" });
         }
         for (const item of products){
-            const merchItem = event.showcase.find(sItem => sItem.product.toString() === item.product);
+            const merchItem = event.showcase.find(sItem => sItem._id.toString() === item.product);
+            console.log(merchItem);
             if(merchItem){
                 if(merchItem.quantity < item.quantity){
                     return res.status(400).json({ message: `Insufficient stock for product ${merchItem.product}` });
                 }
+                console.log("Sufficient stock, proceeding...");
                 merchItem.quantity -= item.quantity;
+
+            } else {
+                return res.status(400).json({ message: `Product ${item.product} not found in showcase` });
             }
         }
 
