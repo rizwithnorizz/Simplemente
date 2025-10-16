@@ -4,8 +4,8 @@ import { addNewShowcase, deleteShowcase, getShowcase, updateShowcase } from "../
 const router = express.Router();
 
 router.get('/:id', getShowcase);
-router.post('/add', addNewShowcase);
-router.put('/update/:id', updateShowcase);
-router.delete('/delete/:id', deleteShowcase);
+router.post('/:id', addNewShowcase);
+router.put('/:id', updateShowcase);
+router.delete('/:id', deleteShowcase);
 
 export default router;

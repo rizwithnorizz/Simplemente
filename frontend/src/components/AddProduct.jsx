@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../utils/axios.js";
-import toast from 'react-hot-toast';
-const AddProduct = ({ isOpen, onConfirm, onClose }) => {
+import toast from "react-hot-toast";
+import { X } from 'lucide-react';
+const AddProduct = ({
+  isOpen,
+  onConfirm,
+  onClose,
+  fetchCategory,
+  fetchProduct,
+  category,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -10,15 +18,24 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
     image: null,
   });
 
+  useEffect(() => {
+    if (category.length > 0 && !formData.category) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        category: category[0]._id,
+      }));
+    }
+  }, [category, formData.category]);
+
   const clearFormData = () => {
     setFormData({
-        name: "",
-        category: "",
-        orig_price: "",
-        markup: "",
-        image: null,
+      name: "",
+      category: category.length > 0 ? category[0]._id : "", // Reset to first category
+      orig_price: "",
+      markup: "",
+      image: null,
     });
-  }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +48,7 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
 
   const handleSubmit = async () => {
     try {
-      const res = await api.post("/product/create", {
+      const res = await api.post("/api/product/create", {
         name: formData.name,
         category: formData.category,
         orig_price: formData.orig_price,
@@ -39,6 +56,8 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
       });
       console.log(res.data);
       onConfirm();
+      fetchCategory();
+      fetchProduct();
       toast.success("Added product successfully!");
     } catch (error) {
       toast.error("Error: ", error);
@@ -54,9 +73,17 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
 
       <div className="fixed inset-0 flex items-center justify-center z-[999]">
         <div className="bg-white rounded-lg p-6 md:w-2.5/4 w-3/4">
-          <h2 className="text-xl font-bold text-pink-500 mb-4">
-            Add New Product
-          </h2>
+          <div className="flex justify-between mb-4">
+            <h2 className="text-xl font-bold text-pink-500">Add New Product</h2>
+            <button
+              onClick={() => {
+                onClose();
+                clearFormData();
+              }}
+            >
+              <X className=" text-red-500 text-xl  hover:text-red-200" />
+            </button>
+          </div>
           <div className="flex gap-4 md:grid md:grid-cols-2 flex-col">
             {/* Image Upload Section */}
             <div>
@@ -84,7 +111,7 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
             </div>
 
             {/* Product Details Section */}
-            <div className="relative h-full w-full" >
+            <div className="relative h-full w-full">
               <div className="mb-4">
                 <label
                   htmlFor="name"
@@ -98,7 +125,7 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100 "
+                  className="input input-sm w-full bg-gray-100"
                 />
               </div>
               <div className="mb-4">
@@ -108,14 +135,23 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
                 >
                   Category
                 </label>
-                <input
-                  type="text"
+                <select
                   id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
                   className="input input-sm w-full bg-gray-100"
-                />
+                >
+                  {category.length > 0 ? (
+                    category.map((item) => (
+                      <option key={item._id} value={item._id}>
+                        {item.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option>No available categories</option>
+                  )}
+                </select>
               </div>
               <div className="mb-4">
                 <label
@@ -162,15 +198,6 @@ const AddProduct = ({ isOpen, onConfirm, onClose }) => {
               className="btn btn-primary text-white w-24"
             >
               Create
-            </button>
-            <button
-              onClick={() =>{ 
-                onClose();
-                clearFormData();
-              }}
-              className="btn btn-ghost text-pink-500 w-24"
-            >
-              Close
             </button>
           </div>
         </div>

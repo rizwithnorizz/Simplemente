@@ -14,7 +14,7 @@ export async function login(req, res) {
             const token = jwt.sign(
                 { id: user._id, username: user.username },
                 process.env.SECRET,
-                { expiresIn: '1h' }
+                { expiresIn: '1d' }
             );
             return res.status(200).json({ message: "Successfully logged in", token});
         } else {
@@ -51,7 +51,16 @@ export async function verifyToken(req, res) {
             return res.status(401).json({ message: "No token provided" });
         }
 
-        const decoded = jwt.verify(token, process.env.SECRET);
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.SECRET);
+        } catch (err) {
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ message: "Token has expired" });
+            }
+            return res.status(401).json({ message: "Invalid token" });
+        }
+
         const user = await User.findById(decoded.id);
         
         if (!user) {

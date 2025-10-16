@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        required: true
+        default: null,
+        required: false
     },
     orig_price: {
         type: Number,

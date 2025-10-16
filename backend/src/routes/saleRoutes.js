@@ -1,8 +1,8 @@
 import express from "express";
-import { } from "../controllers/saleController.js";
+import { refund, transact } from "../controllers/saleController.js";
 
 const router = express.Router();
 
-router.get('/', );
-
+router.post('/:id', transact);
+router.put('/:id', refund);
 export default router;

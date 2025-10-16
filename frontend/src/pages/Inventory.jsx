@@ -2,9 +2,11 @@ import React from "react";
 import Layout from "../components/layout.jsx";
 import api from "../utils/axios.js";
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddProduct from "../components/AddProduct.jsx";
 import Category from "../components/Category.jsx";
+import EditProduct from "../components/EditProduct.jsx";
 const Inventory = () => {
   const [currCat, setCurrCat] = useState("");
   const [products, setProducts] = useState([]);
@@ -12,17 +14,21 @@ const Inventory = () => {
   const [category, setCategory] = useState([]);
   const [addModal, setAddModal] = useState(false);
   const [catModal, setCatModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState([]);
+
   const fetchProduct = async () => {
     try {
-      const res = await api.get("/product");
+      const res = await api.get("/api/product");
       setProducts(res.data);
     } catch (error) {
       toast.error(error);
     }
   };
+
   const fetchCategory = async () => {
     try {
-      const res = await api.get("/category");
+      const res = await api.get("/api/category");
       setCategory(res.data);
     } catch (error) {
       toast.error(error);
@@ -31,14 +37,23 @@ const Inventory = () => {
 
   const filterData = () => {
     const filtered = products.filter((item) => {
-      return item.category.name === currCat || currCat === ""; // Show all if no category is selected
+      if (currCat === "" || currCat == "Category") {
+        return true;
+      }
+      return item.category && item.category.name === currCat;
     });
     setFilter(filtered);
   };
+
   useEffect(() => {
     fetchProduct();
     fetchCategory();
   }, []);
+
+  useEffect(() => {
+    filterData();
+  }, [currCat, products]);
+
   return (
     <Layout>
       <h1 className="font-bold text-pink-500 text-4xl mb-4">Inventory</h1>
@@ -56,17 +71,22 @@ const Inventory = () => {
           filterData();
         }}
       >
-        <option disabled={true}>Category</option>
+        <option>Category</option>
         {category.map((cat) => (
           <option key={cat._id}>{cat.name}</option>
         ))}
       </select>
-      <div 
-      onClick={() => {setCatModal(true)}}
-      className="btn bg-transparent hover:bg-transparent btn-sm ml-2">+</div>
+      <div
+        onClick={() => {
+          setCatModal(true);
+        }}
+        className="btn bg-transparent hover:bg-transparent btn-sm ml-2"
+      >
+        +
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full p-4">
-        {products.map((item) => (
+        {filteredProd.map((item) => (
           <div key={item._id} className="bg-white rounded-xl p-4">
             <div className="flex justify-between">
               <div className="flex items-center justify-center flex-col">
@@ -78,7 +98,9 @@ const Inventory = () => {
                   <tr className="border-b">
                     <td className="py-2 text-gray-600">Category:</td>
                     <td className="py-2 text-right font-medium">
-                      {item.category.name}
+                      {item.category && item.category.name !== null
+                        ? item.category.name
+                        : "No available category"}
                     </td>
                   </tr>
                   <tr className="border-b">
@@ -97,7 +119,15 @@ const Inventory = () => {
               </table>
             </div>
             <div className="flex justify-end">
-              <div className="btn btn-primary text-white">Edit</div>
+              <div
+                onClick={() => {
+                  setSelectedItem(item);
+                  setEditModal(true);
+                }}
+                className="btn btn-primary text-white"
+              >
+                Edit
+              </div>
             </div>
           </div>
         ))}
@@ -112,15 +142,29 @@ const Inventory = () => {
         onClose={() => {
           setAddModal(false);
         }}
+        fetchCategory={fetchCategory}
+        fetchProduct={fetchProduct}
+        category={category}
       />
       <Category
         isOpen={catModal}
         onConfirm={() => {
-
+          setCatModal(false);
         }}
         onClose={() => {
           setCatModal(false);
         }}
+        fetchCategory={fetchCategory}
+        category={category}
+      />
+      <EditProduct
+        fetchProduct={fetchProduct}
+        isOpen={editModal}
+        onClose={() => setEditModal(false)}
+        onConfirm={() => {setEditModal(false); fetchProduct()}}
+        editProd={selectedItem}
+        category={category}
+        id={selectedItem._id}
       />
     </Layout>
   );

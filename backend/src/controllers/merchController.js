@@ -1,5 +1,5 @@
 import Event from '../models/Event.js';
-
+import Product from '../models/Product.js';
 
 export async function getShowcase(req, res) {
     const { id } = req.params;
@@ -23,11 +23,22 @@ export async function getShowcase(req, res) {
 }
 
 export async function addNewShowcase(req, res){
-    const { eventID, productID, quantity} = req.body;
+    const { id } = req.params;
+    const { product, quantity} = req.body;
     try{
-        const event = await Event.findById(eventID);
+        const event = await Event.findById(id);
+        const prod = await Product.findById(product);
+
+        if (!prod){
+            return res.status(404).json({ message: "Product not found",id: prod });
+        }
+
+        if (!event){
+            return res.status(404).json({ message: "Event not found" });
+        }
+
         event.showcase.push({
-            product: productID,
+            product: prod,
             quantity: quantity
         });
 
@@ -50,10 +61,43 @@ export async function addNewShowcase(req, res){
 }
 
 export async function updateShowcase(req, res){
-
+    const { id } = req.params;
+    const { product, quantity } = req.body
+    try {
+        const event = await Event.findById(id);
+        event.showcase.id(product).quantity = quantity;
+        await event.save();
+        res.status(200).json({ message: "Successfully updated showcase" });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating showcase", error: error.message });
+    }
 }
 
 
-export async function deleteShowcase(req, res){
+export async function deleteShowcase(req, res) {
+    const { id } = req.params;
+    const { product } = req.body;
 
+    try {
+        const event = await Event.findByIdAndUpdate(
+            id,
+            { $pull: { showcase: { product: product } } },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found ", id: product});
+        }
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        res.status(200).json({ message: "Successfully removed from showcase" });
+    } catch (error) {
+        console.error("Delete showcase error:", error);
+        res.status(500).json({ 
+            message: "Error removing from showcase", 
+            error: error.message 
+        });
+    }
 }

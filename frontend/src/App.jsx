@@ -9,7 +9,7 @@ import Merch from './pages/Merch';
 import Event from './pages/Event';
 import Sale from './pages/Sale';
 import Inventory from './pages/Inventory';
-
+import EditProduct from './components/EditProduct';
 const App = () => {
   return (
     <div data-theme="valentine" className="caret-transparent">
@@ -50,6 +50,7 @@ const App = () => {
           </ProtectedRoute>
         }/>
       </Routes>
+      
     </div>
   )
 }

@@ -1,11 +1,13 @@
 import express from "express";
 
-import { getAllEvent, createEvent } from '../controllers/eventController.js';
+import { getAllEvent, createEvent, editEvent, deleteEvent } from '../controllers/eventController.js';
 
 const router = express.Router();
 
 router.get('/', getAllEvent);
-router.post('/create', createEvent);
+router.post('/', createEvent);
+router.put('/:id', editEvent);
+router.delete('/:id', deleteEvent);
 
 
 export default router;

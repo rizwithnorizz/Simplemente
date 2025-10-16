@@ -7,33 +7,12 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const verifyToken = async () => {
-                try {
-                    const response = await api.get('/auth/verify', {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                    if (response.status === 200) {
-                        navigate('/dashboard'); // Redirect if token is valid
-                        toast.success("Already logged in!");
-                    }
-                } catch (error) {
-                    localStorage.removeItem('token');
-                }
-            };
-            verifyToken();
-        }
-    }, [navigate]);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const handleLogin = async(e) => {
         e.preventDefault();
         try{ 
-            const res = await api.post("/auth/login", {
+            const res = await api.post("/api/auth/login", {
                 username: username,
                 password: password
             });
@@ -72,7 +51,7 @@ const Login = () => {
                 </div>
             </div>
             
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">Simplemente Porque</h1>
+            <h1 className="text-3xl font-bold text-center text-primary mb-2 ">Simplemente Porque</h1>
             <p className="text-center text-gray-500 mb-8">Inventory System</p>
             
             <form onSubmit={handleLogin} className="space-y-4">
