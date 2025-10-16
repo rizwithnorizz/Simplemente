@@ -22,7 +22,9 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2",
-    "simplemente": "file:.."
+    "simplemente": "file:..",
+    "@upstash/redis": "^1.28.4",
+    "@upstash/ratelimit": "^1.0.0"
   },
   "devDependencies": {
     "jest": "^30.2.0",
