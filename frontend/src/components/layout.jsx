@@ -1,6 +1,8 @@
 import Sidebar from "./sidebar";
 
 const Layout = ({ children }) => {
+    document.title = "Simplemente";
+
     return ( 
         <div className="min-h-screen min-w-screen flex">
             <Sidebar />
