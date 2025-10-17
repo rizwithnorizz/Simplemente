@@ -12,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@upstash/ratelimit": "^1.0.0",
+    "@upstash/redis": "^1.28.4",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -22,9 +24,8 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2",
-    "simplemente": "file:..",
-    "@upstash/redis": "^1.28.4",
-    "@upstash/ratelimit": "^1.0.0"
+    "multer": "^2.0.2",
+    "simplemente": "file:.."
   },
   "devDependencies": {
     "jest": "^30.2.0",

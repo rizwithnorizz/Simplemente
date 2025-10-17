@@ -14,7 +14,7 @@ const EditProduct = ({
 }) => {
   const [formData, setFormData] = useState({
     name: editProd?.name || "",
-    category: editProd?.category || "",
+    category: editProd?.category?._id || editProd?.category || "",
     orig_price: editProd?.orig_price || "",
     markup: editProd?.markup || "",
     image: null,
@@ -22,11 +22,19 @@ const EditProduct = ({
   const handleSubmit = async () => {
     console.log(id);
     try {
-      const res = await api.put(`/api/product/${id}`, {
-        name: formData.name,
-        category: formData.category,
-        orig_price: formData.orig_price,
-        markup: formData.markup,
+      const form = new FormData();
+      form.append('name', formData.name);
+      form.append('category', formData.category._id);
+      form.append('orig_price', formData.orig_price);
+      form.append('markup', formData.markup);
+      if (formData.image) {
+        form.append('image', formData.image);
+      }
+
+      const res = await api.put(`/api/product/${id}`, form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       onConfirm();
       console.log(res.data);
@@ -34,6 +42,18 @@ const EditProduct = ({
       console.log("Error encountered: ", error);
     }
   };
+
+  useEffect(() => {
+    if (editProd) {
+      setFormData({
+        name: editProd.name || "",
+        category: editProd.category?._id || editProd.category || "",
+        orig_price: editProd.orig_price || "",
+        markup: editProd.markup || "",
+        image: null,
+      });
+    }
+  }, [editProd]);
 
   const handleDelete = async () => {
     try {
@@ -128,9 +148,7 @@ const EditProduct = ({
                 <select
                   id="category"
                   name="category"
-                  value={
-                    formData.category?._id || formData.category || "no-category"
-                  }
+                  value={formData.category || "no-category"}
                   onChange={handleInputChange}
                   className="input input-sm w-full bg-gray-100"
                 >

@@ -272,7 +272,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                           handleAdded(item, !item.added, index);
                         }}
                         className={`btn btn-sm text-white ${
-                          item.added ? "btn-success" : "btn-primary"
+                          item.added ? "btn-secondary" : "btn-primary"
                         }`}
                       >
                         {item.added ? "Added" : "Add"}

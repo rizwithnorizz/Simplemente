@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "../components/layout.jsx";
 import api from "../utils/axios.js";
 import { useEffect, useState } from "react";
+import { config } from "../config/config.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import AddProduct from "../components/AddProduct.jsx";
@@ -17,6 +18,7 @@ const Inventory = () => {
   const [editModal, setEditModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
 
+  const [focusProduct, setFocusProduct] = useState(null);
   const fetchProduct = async () => {
     try {
       const res = await api.get("/api/product");
@@ -84,53 +86,109 @@ const Inventory = () => {
       >
         +
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full p-4">
-        {filteredProd.map((item) => (
-          <div key={item._id} className="bg-white rounded-xl p-4">
-            <div className="flex justify-between">
-              <div className="flex items-center justify-center flex-col">
-                <div className="h-32 w-32 bg-gray-200 rounded-xl"></div>
-                <p className="text-pink-800 font-bold p-2">{item.name}</p>
-              </div>
-              <table className="w-full text-sm m-2 ">
-                <tbody>
-                  <tr className="border-b">
-                    <td className="py-2 text-gray-600">Category:</td>
-                    <td className="py-2 text-right font-medium">
-                      {item.category && item.category.name !== null
-                        ? item.category.name
-                        : "No available category"}
-                    </td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2 text-gray-600">Original:</td>
-                    <td className="py-2 text-right font-medium">
-                      ₱{item.orig_price}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 text-gray-600">Markup:</td>
-                    <td className="py-2 text-right font-medium">
-                      ₱{item.markup}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+      {/* <div className="flex justify-between">
+        <div className="flex items-center justify-center flex-col">
+          {item.image ? (
+            <img
+              src={`${config.imageUrl}/${item.image}`}
+              className="h-32 w-32 object-cover rounded-xl"
+            />
+          ) : (
+            <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+              No Image
             </div>
-            <div className="flex justify-end">
-              <div
-                onClick={() => {
-                  setSelectedItem(item);
-                  setEditModal(true);
-                }}
-                className="btn btn-primary text-white"
-              >
-                Edit
+          )}
+          <p className="text-pink-800 font-bold p-2">{item.name}</p>
+        </div>
+        
+      </div>
+      <div className="flex justify-end">
+        <div
+          onClick={() => {
+            setSelectedItem(item);
+            setEditModal(true);
+          }}
+          className="btn btn-primary text-white"
+        >
+          Edit
+        </div>
+      </div> */}
+      <div className="flex w-full p-4 gap-4">
+        <div className="w-full h-min flex-col rounded-xl">
+          {filteredProd.map((item) => (
+            <div
+              key={item._id}
+              onFocus={() => setFocusProduct(item)}
+              tabIndex={0}
+              className="collapse collapse-sm bg-white mb-2"
+            >
+              <div className="collapse collapse-title flex justify-between">
+                <span className="text-primary font-medium font-mono text-2xl">{item.name.toLowerCase()}</span>
+                <button
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setEditModal(true);
+                  }}
+                  className="btn btn-primary text-lg font-mono text-white"
+                >
+                  Edit
+                </button>
+              </div>
+              <div className="collapse collapse-content">
+                <table className="w-full text-sm m-2 ">
+                  <tbody>
+                    <tr className="border-b">
+                      <td className="py-2 text-gray-600">Category:</td>
+                      <td className="py-2 text-right font-medium">
+                        {item.category && item.category.name !== null
+                          ? item.category.name
+                          : "No available category"}
+                      </td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-2 text-gray-600">Original:</td>
+                      <td className="py-2 text-right font-medium">
+                        ₱{item.orig_price}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 text-gray-600">Markup:</td>
+                      <td className="py-2 text-right font-medium">
+                        ₱{item.markup}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 text-secondary text-xl font-bold">
+                        PRICE:
+                      </td>
+                      <td className="py-2 text-right text-secondary text-xl font-bold">
+                        ₱{item.markup + item.orig_price}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="w-1/2 bg-white rounded-xl p-4 flex justify-center items-center">
+          {focusProduct ? (
+            focusProduct.image ? (
+              <img
+                src={`${config.imageUrl}/${focusProduct.image}`}
+                className="h-full w-full object-cover rounded-xl"
+              />
+            ) : (
+              <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            )
+          ) : (
+            <span className="text-primary font-semibold">
+              Select a product for display
+            </span>
+          )}
+        </div>
       </div>
 
       <AddProduct
@@ -161,7 +219,10 @@ const Inventory = () => {
         fetchProduct={fetchProduct}
         isOpen={editModal}
         onClose={() => setEditModal(false)}
-        onConfirm={() => {setEditModal(false); fetchProduct()}}
+        onConfirm={() => {
+          setEditModal(false);
+          fetchProduct();
+        }}
         editProd={selectedItem}
         category={category}
         id={selectedItem._id}

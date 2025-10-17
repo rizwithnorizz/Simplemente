@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import api from "../utils/axios.js";
 import toast from "react-hot-toast";
+import config from "../config/config.js";
 const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
   const [quant, setQuantity] = useState(0);
   const handleUpdate = async () => {
@@ -21,16 +22,16 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
   const handleRemove = async () => {
     console.log(showcase);
     try {
-        await api.delete(`/api/merch/${event}`, {
-            data: { product: showcase.product._id}
-        });
-        toast.success("Successfully removed!");
-        onConfirm();
+      await api.delete(`/api/merch/${event}`, {
+        data: { product: showcase.product._id },
+      });
+      toast.success("Successfully removed!");
+      onConfirm();
     } catch (error) {
-        console.log(error)
-        toast.error("Error, could not remove");
+      console.log(error);
+      toast.error("Error, could not remove");
     }
-  }
+  };
   useEffect(() => {
     if (showcase) {
       setQuantity(showcase.quantity);
@@ -54,7 +55,17 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
             </button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="h-full w-full bg-gray-500 rounded-xl" />
+            {showcase.product.image ? (
+              <img
+                src={`${config.imageUrl}/${showcase.product.image}`}
+                alt={showcase.product.image}
+                className="h-3/4 w-3/4 object-cover rounded-xl"
+              />
+            ) : (
+              <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            )}
             <div className="">
               <div className="flex flex-col">
                 <span>Product Name</span>
@@ -91,13 +102,14 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
               <div className="flex flex-col mb-2">
                 <span className="text-center">Quantity</span>
                 <div className="flex gap-4 items-center justify-center">
-                  <button 
-                  onClick={() => {
-                    if (quant === 1) return;
+                  <button
+                    onClick={() => {
+                      if (quant === 1) return;
 
-                    handleQuantityChange(quant - 1);
-                  }}
-                  className="btn btn-primary btn-sm text-white">
+                      handleQuantityChange(quant - 1);
+                    }}
+                    className="btn btn-primary btn-sm text-white"
+                  >
                     <Minus size={18} />
                   </button>
                   <input
@@ -111,23 +123,26 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                       handleQuantityChange(parseInt(e.target.value) || 1);
                     }}
                   />
-                  <button 
-                  onClick={() => {
-                    handleQuantityChange(quant + 1);
-                  }}
-                  className="btn btn-primary btn-sm text-white">
+                  <button
+                    onClick={() => {
+                      handleQuantityChange(quant + 1);
+                    }}
+                    className="btn btn-primary btn-sm text-white"
+                  >
                     <Plus size={18} />
                   </button>
                 </div>
               </div>
               <button
-              onClick={handleUpdate}
-               className="btn btn-primary text-white w-full">
+                onClick={handleUpdate}
+                className="btn btn-primary text-white w-full"
+              >
                 Update
               </button>
-              <button 
-              onClick={handleRemove}
-              className="btn btn-accent text-white w-full mt-2">
+              <button
+                onClick={handleRemove}
+                className="btn btn-secondary text-white w-full mt-2"
+              >
                 Remove
               </button>
             </div>

@@ -1,5 +1,8 @@
 import Product from "../models/Product.js";
 import Event from "../models/Event.js";
+import upload from "../config/upload.js";
+
+export const uploadImage = upload.single('image');
 
 export async function getAllProduct(_, res) {
   try {
@@ -14,7 +17,8 @@ export async function getAllProduct(_, res) {
 export async function createProduct(req, res) {
   try {
     const { name, category, orig_price, markup } = req.body;
-    const newProduct = new Product({ name, category, orig_price, markup });
+    const image = req.file ? req.file.filename : null;
+    const newProduct = new Product({ name, category, orig_price, markup, image });
 
     const saved = await newProduct.save();
     res.status(200).json(saved);
@@ -29,12 +33,21 @@ export async function editProduct(req, res) {
     const { id } = req.params;
     const { name, category, orig_price, markup } = req.body;
 
-    if (!name || !orig_price || !markup) {
+    if (!name || !category || !orig_price || !markup) {
       return res.status(400).json({ message: "Missing required fields" });
-    }
+    } 
 
-    // Build update object, exclude category if null or undefined
-    const updateFields = { name, orig_price, markup, category };
+    console.log("Updating with fields: ", category, name, orig_price, markup, req.file);
+
+
+    const updateFields = { 
+      name, 
+      orig_price, 
+      markup, 
+      category,
+      ...(req.file && { image: req.file.filename })
+    };
+
     const update = await Product.findByIdAndUpdate(
       id,
       updateFields,
@@ -61,10 +74,9 @@ export async function deleteProduct(req, res) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // Remove the product from all event showcases
     await Event.updateMany(
-      { "showcase.product": id }, // Find events where the product exists in the showcase
-      { $pull: { showcase: { product: id } } } // Remove the entire object from the showcase array
+      { "showcase.product": id }, 
+      { $pull: { showcase: { product: id } } } 
     );
 
     res.status(200).json({ message: "Successfully deleted" });
@@ -72,4 +84,18 @@ export async function deleteProduct(req, res) {
     res.status(500).json({ message: "Error encountered" + error });
     console.log(error.status, ": ", error);
   }
+}
+
+export async function getProductById(req, res) {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id).populate("category");
+    if (!product) { 
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Error encountered" + error });
+    console.log(error.status, ": ", error);
+  } 
 }

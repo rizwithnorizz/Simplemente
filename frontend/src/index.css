@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    /* Use monospace stack directly to avoid @apply lint issues */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
+    text-transform: lowercase;
+  }
+
+  /* Ensure UI controls (buttons, inputs, daisyui .btn) are also lowercased */
+  button,
+  input[type="button"],
+  input[type="submit"],
+  .btn {
+    text-transform: lowercase !important;
+  }
+}
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */

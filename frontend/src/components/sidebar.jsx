@@ -10,8 +10,7 @@ const baseMenuItems = [
     { name: 'Dashboard', path: '/dashboard'},
     { name: 'Events', path: '/event'},
     { name: 'Inventory', path: '/inventory'},
-    { name: 'Invoices', path: '/invoices'},
-    { name: 'Logs', path: '/logs'}
+    { name: 'Invoices', path: '/invoices'}
 ];
 
 const Sidebar = () => {
@@ -90,7 +89,7 @@ const Sidebar = () => {
                                     className={`w-full btn rounded-md justify-start text-xl
                                         ${location.pathname === item.path 
                                             ? 'btn-primary text-white' 
-                                            : 'btn-ghost hover:text-white'
+                                            : 'btn-ghost text-primary hover:text-white'
                                         }`}
                                 >
                                     {item.name}
@@ -123,7 +122,7 @@ const Sidebar = () => {
                     <div className="mt-auto pt-4">
                         <button 
                             onClick={() => setIsModalOpen(true)} 
-                            className="w-full btn btn-ghost rounded-md justify-start text-pink-500 text-xl hover:text-white"
+                            className="w-full btn btn-ghost rounded-md justify-start text-primary text-xl hover:text-white"
                         >
                             Logout
                         </button>

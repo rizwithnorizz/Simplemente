@@ -26,7 +26,6 @@ const Sale = () => {
 
 const addToCart = (item) => {
     const product = products.find((prod) => prod._id === item.product);
-    console.log(product);
     if (!product || product.quantity <= 0) {
         toast.error("No more stock available!");
         return;
@@ -40,28 +39,32 @@ const addToCart = (item) => {
     });
     setProducts(updateProduct);
 
-    const existingItem = cart.find((cartItem) => cartItem.product === item.product);
+    const existingItem = cart.find((cartItem) => cartItem.product._id === product.product._id);
     if (existingItem) {
         const updatedCart = cart.map((cartItem) => {
-            if (cartItem.product === item.product) {
+            if (cartItem.product._id === product.product._id) {
                 return { ...cartItem, quantity: cartItem.quantity + 1 };
             }
             return cartItem;
         });
         setCart(updatedCart);
     } else {
-        setCart([...cart, { ...item, quantity: 1 }]);
+        setCart([...cart, { 
+            name: item.name,
+            product: product.product, 
+            price: item.price,
+            quantity: 1 }]);
     }
 };
 
 const changeCartQuantity = (itemId, newQuantity) => {
     const updatedCart = cart
         .map((cartItem) => {
-            if (cartItem.product === itemId) {
+            if (cartItem.product._id === itemId._id) {
                 // If reducing to zero, return quantity to products
                 if (cartItem.quantity === 1 && newQuantity === 0) {
                     const newProd = products.map((prod) => {
-                        if (prod._id === itemId) {
+                        if (prod.product._id === itemId._id) {
                             return { ...prod, quantity: prod.quantity + 1 };
                         }
                         return prod;
@@ -71,13 +74,13 @@ const changeCartQuantity = (itemId, newQuantity) => {
                 }
                 // If increasing, decrease product stock
                 if (newQuantity > cartItem.quantity) {
-                    const product = products.find((prod) => prod._id === itemId);
+                    const product = products.find((prod) => prod.product._id === itemId._id);
                     if (!product || product.quantity <= 0) {
                         toast.error("No more stock available!");
                         return cartItem;
                     }
                     const newProd = products.map((prod) => {
-                        if (prod._id === itemId && prod.quantity > 0) {
+                        if (prod.product._id === itemId._id && prod.quantity > 0) {
                             return { ...prod, quantity: prod.quantity - 1 };
                         }
                         return prod;
@@ -87,7 +90,7 @@ const changeCartQuantity = (itemId, newQuantity) => {
                 // If decreasing but not removing, increase product stock
                 if (newQuantity < cartItem.quantity && newQuantity > 0) {
                     const newProd = products.map((prod) => {
-                        if (prod._id === itemId) {
+                        if (prod.product._id === itemId._id) {
                             return { ...prod, quantity: prod.quantity + 1 };
                         }
                         return prod;

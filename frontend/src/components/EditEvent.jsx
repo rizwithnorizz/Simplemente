@@ -54,6 +54,17 @@ const EditEvent = ({ isOpen, onClose, onConfirm, event }) => {
     }
   }
 
+  const deleteEvent = async () => {
+      try {
+        await api.delete(`/api/event/${event._id}`);
+        toast.success("Event deleted!");
+        onConfirm();
+      } catch (error) {
+        console.log(error);
+        toast.error("Error deleting event!");
+      }
+  }
+
   if (!isOpen) return null;
   return (
     <>
@@ -113,6 +124,9 @@ const EditEvent = ({ isOpen, onClose, onConfirm, event }) => {
             />
             <button onClick={() => {updateEvent()}} className="btn btn-primary text-white mt-4">
               Save Changes
+            </button>
+            <button className="btn btn-secondary text-white mt-4 ml-2" onClick={() => {deleteEvent()}}>
+              Delete
             </button>
           </div>
         </div>

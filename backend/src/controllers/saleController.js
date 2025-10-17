@@ -1,5 +1,6 @@
 import Event from '../models/Event.js';
 import Sale from '../models/Sale.js';
+import Invoice from '../models/Invoice.js';
 
 
 export async function transact(req, res){
@@ -17,8 +18,7 @@ export async function transact(req, res){
             return res.status(400).json({ message: "Products must be an array" });
         }
         for (const item of products){
-            const merchItem = event.showcase.find(sItem => sItem._id.toString() === item.product);
-            console.log(merchItem);
+            const merchItem = event.showcase.find(sItem => sItem.product.toString() === item.product._id);
             if(merchItem){
                 if(merchItem.quantity < item.quantity){
                     return res.status(400).json({ message: `Insufficient stock for product ${merchItem.product}` });
@@ -60,7 +60,24 @@ export async function transact(req, res){
             });
             await sale.save();
         }
-        res.status(200).json({ message: "Transaction successful", sale });
+
+        // Create invoice for this transaction
+        const invoice = new Invoice({
+            event: id,
+            cart: products.map(item => ({
+                product: item.product,
+                price: item.price,
+                quantity: item.quantity
+            }))
+        }); 
+
+        await invoice.save();
+
+        res.status(200).json({ 
+            message: "Transaction successful", 
+            sale,
+            invoice 
+        });
     }catch(error){
         console.error("Error processing transaction:", error);
         res.status(500).json({

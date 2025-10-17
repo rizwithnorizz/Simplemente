@@ -48,11 +48,19 @@ const AddProduct = ({
 
   const handleSubmit = async () => {
     try {
-      const res = await api.post("/api/product/create", {
-        name: formData.name,
-        category: formData.category,
-        orig_price: formData.orig_price,
-        markup: formData.markup,
+      const form = new FormData();
+      form.append('name', formData.name);
+      form.append('category', formData.category);
+      form.append('orig_price', formData.orig_price);
+      form.append('markup', formData.markup);
+      if (formData.image) {
+        form.append('image', formData.image);
+      }
+      
+      const res = await api.post("/api/product/create", form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       console.log(res.data);
       onConfirm();

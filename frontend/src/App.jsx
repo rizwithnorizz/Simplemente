@@ -1,6 +1,5 @@
 import React from 'react'
 import { Route, Routes } from "react-router-dom";
-import InventorySystem from './pages/InventorySystem';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -10,6 +9,7 @@ import Event from './pages/Event';
 import Sale from './pages/Sale';
 import Inventory from './pages/Inventory';
 import EditProduct from './components/EditProduct';
+import Invoice from './pages/Invoice';
 const App = () => {
   return (
     <div data-theme="valentine" className="caret-transparent">
@@ -22,11 +22,6 @@ const App = () => {
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard/>
-          </ProtectedRoute>
-        }/>
-        <Route path="/test" element={
-          <ProtectedRoute>
-            <InventorySystem/>
           </ProtectedRoute>
         }/>
         <Route path="/event" element ={
@@ -47,6 +42,11 @@ const App = () => {
         <Route path="/inventory" element ={
           <ProtectedRoute>
             <Inventory/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/invoices" element={
+          <ProtectedRoute>
+            <Invoice/>
           </ProtectedRoute>
         }/>
       </Routes>

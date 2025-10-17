@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddMerch from "../components/AddMerch.jsx";
 import EditMerch from "../components/EditMerch.jsx";
-
+import config from '../config/config.js';
 const Merch = () => {
   const location = useLocation();
   const [addMerchModal, setMerchModal] = useState(false);
@@ -18,6 +18,7 @@ const Merch = () => {
   const fetchProducts = async () => {
     try {
       const res = await api.get(`/api/merch/${currentEventID}`);
+      console.log(res.data);
       setProducts(res.data);
     } catch (error) {
       console.log(error);
@@ -40,14 +41,14 @@ const Merch = () => {
         Add Product to Showcase
       </button>
 
-      <div className="grid grid-cols-4 items-center w-1/2  pt-4">
-        <span className="font-medium text-center text-primary">Product</span>
-        <span className="font-medium text-center ">Quantity</span>
-        <span className="font-medium text-center text-accent w-2/3">Category</span>
-
-      </div>
       <div className="h-screen rounded-lg p-4 overflow-y-auto flex justify-between gap-4">
         <div className=" w-full">
+          <div className="hidden sm:grid sm:grid-cols-4 w-full sm:gap-10 items-center mb-2 px-3">
+            <span className="font-medium  text-center text-primary">Product</span>
+            <span className="font-medium text-center">Quantity</span>
+            <span className="font-medium text-center text-accent">Category</span>
+            <span className="font-medium ">Actions</span>
+          </div>
           {products.map((item, index) => (
             <div
               key={item._id}
@@ -67,9 +68,13 @@ const Merch = () => {
                   <span className="font-medium text-center text-accent">
                     {item.product.category?.name || "No category"}
                   </span>
-                  <button 
-                  onClick={(e) => {e.stopPropagation(); setEditModal(true)}}
-                  className="btn btn-primary text-white w-20 ">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditModal(true);
+                    }}
+                    className="btn btn-primary text-white "
+                  >
                     Edit
                   </button>
                 </div>
@@ -77,11 +82,15 @@ const Merch = () => {
               <div className="collapse-content">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600 flex flex-col items-center">
-                   <span className="font-bold text-primary underline">₱{item.product.orig_price}</span>
+                    <span className="font-bold text-primary underline">
+                      ₱{item.product.orig_price}
+                    </span>
                     Original Price
                   </span>
                   <span className="text-sm text-gray-600 flex flex-col items-center">
-                   <span className="font-bold text-primary underline">₱{item.product.markup}</span>
+                    <span className="font-bold text-primary underline">
+                      ₱{item.product.markup}
+                    </span>
                     Markup
                   </span>
                 </div>
@@ -89,11 +98,21 @@ const Merch = () => {
             </div>
           ))}
         </div>
-        <div className="w-full ">
-          <div className="bg-white h-80 rounded-xl p-2 flex flex-col justify-center items-center">
+        <div className="w-full max-w-md ">
+          <div className="bg-white rounded-xl p-5 flex flex-col justify-center items-center">
             {currentProduct ? (
               <>
-                <div className="h-3/4 w-3/4 bg-gray-500 rounded-xl"/>
+                {currentProduct.product.image ? (
+                  <img
+                    src={`${config.imageUrl}/${currentProduct.product.image}`}
+                    alt={currentProduct.product.image}
+                    className="h-3/4 w-3/4 object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+                    No Image
+                  </div>
+                )}
 
                 {currentProduct.product.name}
               </>
@@ -114,11 +133,18 @@ const Merch = () => {
       />
       <EditMerch
         isOpen={editModal}
-        onClose={() => {setEditModal(false); setCurrentProduct(null)}}
-        onConfirm={() => {fetchProducts(); setEditModal(false); setCurrentProduct(null)}}
+        onClose={() => {
+          setEditModal(false);
+          setCurrentProduct(null);
+        }}
+        onConfirm={() => {
+          fetchProducts();
+          setEditModal(false);
+          setCurrentProduct(null);
+        }}
         showcase={currentProduct}
         event={currentEventID}
-        />
+      />
     </Layout>
   );
 };
