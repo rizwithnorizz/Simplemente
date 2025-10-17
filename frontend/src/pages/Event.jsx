@@ -95,8 +95,8 @@ const Event = () => {
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="idx" tick={{ fontSize: 12 }} label={{ value: 'Txn', position: 'insideBottom', fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} label={{ value: '₱', angle: -90, position: 'insideLeft', fontSize: 12 }} />
+                    <XAxis dataKey="idx" tick={{ fontSize: 12 }} label={{ value: 'sales/transaction', position: 'insideBottom', fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} label={{ value: '₱', angle: 0, position: 'insideLeft', fontSize: 12 }} />
                     <Tooltip formatter={(v) => `₱${v}`} labelFormatter={(_, p) => `Txn #${p && p.length ? p[0].payload.idx : ''}`}/>
                     <Line type="monotone" dataKey="amount" stroke="#ec4899" strokeWidth={2} dot={true} name="Revenue" />
                   </LineChart>

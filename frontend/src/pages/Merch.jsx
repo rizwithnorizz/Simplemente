@@ -19,7 +19,6 @@ const Merch = () => {
   const fetchProducts = async () => {
     try {
       const res = await api.get(`/api/merch/${currentEventID}`);
-      console.log(res.data);
       setProducts(res.data);
     } catch (error) {
       console.log(error);

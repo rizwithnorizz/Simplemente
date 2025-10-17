@@ -12,7 +12,6 @@ const Invoice = () => {
   const fetchInvoices = async () => {
     try {
       const res = await api.get('/api/invoice');
-      console.log(res.data);
       setInvoices(res.data);
       setLoading(false);
     } catch (error) {
