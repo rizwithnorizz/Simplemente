@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    document.title = "Login";
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

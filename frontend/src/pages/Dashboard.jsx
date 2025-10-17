@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { EyeClosed, EyeOff, LucideEye } from "lucide-react";
 
 const Dashboard = () => {
+  document.title = "Dashboard";
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hideBal, setHideBal] = useState(true);

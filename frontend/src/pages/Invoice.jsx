@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
 const Invoice = () => {
+  document.title = "Invoice";
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 

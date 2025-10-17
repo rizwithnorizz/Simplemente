@@ -9,6 +9,7 @@ import AddProduct from "../components/AddProduct.jsx";
 import Category from "../components/Category.jsx";
 import EditProduct from "../components/EditProduct.jsx";
 const Inventory = () => {
+  document.title = "Inventory";
   const [currCat, setCurrCat] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProd, setFilter] = useState([]);
@@ -86,33 +87,6 @@ const Inventory = () => {
       >
         +
       </div>
-      {/* <div className="flex justify-between">
-        <div className="flex items-center justify-center flex-col">
-          {item.image ? (
-            <img
-              src={`${config.imageUrl}/${item.image}`}
-              className="h-32 w-32 object-cover rounded-xl"
-            />
-          ) : (
-            <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
-              No Image
-            </div>
-          )}
-          <p className="text-pink-800 font-bold p-2">{item.name}</p>
-        </div>
-        
-      </div>
-      <div className="flex justify-end">
-        <div
-          onClick={() => {
-            setSelectedItem(item);
-            setEditModal(true);
-          }}
-          className="btn btn-primary text-white"
-        >
-          Edit
-        </div>
-      </div> */}
       <div className="flex w-full p-4 gap-4">
         <div className="w-full h-min flex-col rounded-xl">
           {filteredProd.map((item) => (

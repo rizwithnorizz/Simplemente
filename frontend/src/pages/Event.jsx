@@ -8,6 +8,7 @@ import AddEvent from "../components/AddEvent.jsx";
 import EditEvent from "../components/EditEvent.jsx";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 const Event = () => {
+  document.title = "Events";
   const [events, setEvents] = useState([]);
   const [editModal, setEditModal] = useState(false);
   const [eventModal, setEventModal] = useState(false);

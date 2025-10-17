@@ -7,6 +7,7 @@ import AddMerch from "../components/AddMerch.jsx";
 import EditMerch from "../components/EditMerch.jsx";
 import config from '../config/config.js';
 const Merch = () => {
+  document.title = "Merch";
   const location = useLocation();
   const [addMerchModal, setMerchModal] = useState(false);
   const eventPathMatch = location.pathname.match(/^\/event\/([^/]+)/);

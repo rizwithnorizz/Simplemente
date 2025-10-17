@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import { Minus, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 const Sale = () => {
+  document.title = "Sale";
   const { eventID } = useParams();
   const location = useLocation();
   const eventPathMatch = location.pathname.match(/^\/event\/([^/]+)/);
