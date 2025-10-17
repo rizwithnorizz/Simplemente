@@ -23,7 +23,7 @@ const EditProduct = ({
     try {
       const form = new FormData();
       form.append('name', formData.name);
-      form.append('category', formData.category);
+      form.append('category', formData.category._id);
       form.append('orig_price', formData.orig_price);
       form.append('markup', formData.markup);
       if (formData.image) {
