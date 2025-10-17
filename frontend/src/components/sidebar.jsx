@@ -108,7 +108,7 @@ const Sidebar = () => {
                                                 className={`w-full btn btn-sm rounded-md justify-start text-md 
                                                     ${location.pathname === subItem.path 
                                                         ? ' btn-primary text-white'
-                                                        : 'btn-ghost hover:text-white'
+                                                        : 'btn-ghost text-primary hover:text-white'
                                                     }`}
                                             >
                                                 {subItem.name}
