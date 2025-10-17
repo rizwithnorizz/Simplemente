@@ -37,9 +37,6 @@ export async function editProduct(req, res) {
       return res.status(400).json({ message: "Missing required fields" });
     } 
 
-    console.log("Updating with fields: ", category, name, orig_price, markup, req.file);
-
-
     const updateFields = { 
       name, 
       orig_price, 

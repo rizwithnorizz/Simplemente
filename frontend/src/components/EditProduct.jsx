@@ -14,17 +14,16 @@ const EditProduct = ({
 }) => {
   const [formData, setFormData] = useState({
     name: editProd?.name || "",
-    category: editProd?.category?._id || editProd?.category || "",
+    category: editProd?.category || "",
     orig_price: editProd?.orig_price || "",
     markup: editProd?.markup || "",
     image: null,
   });
   const handleSubmit = async () => {
-    console.log(id);
     try {
       const form = new FormData();
       form.append('name', formData.name);
-      form.append('category', formData.category._id);
+      form.append('category', formData.category);
       form.append('orig_price', formData.orig_price);
       form.append('markup', formData.markup);
       if (formData.image) {
@@ -37,23 +36,10 @@ const EditProduct = ({
         },
       });
       onConfirm();
-      console.log(res.data);
     } catch (error) {
       console.log("Error encountered: ", error);
     }
   };
-
-  useEffect(() => {
-    if (editProd) {
-      setFormData({
-        name: editProd.name || "",
-        category: editProd.category?._id || editProd.category || "",
-        orig_price: editProd.orig_price || "",
-        markup: editProd.markup || "",
-        image: null,
-      });
-    }
-  }, [editProd]);
 
   const handleDelete = async () => {
     try {
@@ -61,7 +47,6 @@ const EditProduct = ({
       toast.success("Successfully deleted!");
       fetchProduct();
       onClose();
-      console.log(res.data);
     } catch (error) {
       toast.error("Error encountered!");
       console.log(error);
@@ -148,7 +133,7 @@ const EditProduct = ({
                 <select
                   id="category"
                   name="category"
-                  value={formData.category || "no-category"}
+                  value={formData.category._id}
                   onChange={handleInputChange}
                   className="input input-sm w-full bg-gray-100"
                 >

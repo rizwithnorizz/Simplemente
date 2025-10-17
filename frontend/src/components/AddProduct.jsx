@@ -48,6 +48,10 @@ const AddProduct = ({
 
   const handleSubmit = async () => {
     try {
+      if(category.length === 0) {
+        toast.error("Please add a category first.");
+        return;
+      }
       const form = new FormData();
       form.append('name', formData.name);
       form.append('category', formData.category);
@@ -57,12 +61,11 @@ const AddProduct = ({
         form.append('image', formData.image);
       }
       
-      const res = await api.post("/api/product/create", form, {
+      await api.post("/api/product/create", form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(res.data);
       onConfirm();
       fetchCategory();
       fetchProduct();

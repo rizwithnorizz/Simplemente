@@ -97,7 +97,7 @@ const Inventory = () => {
               className="collapse collapse-sm bg-white mb-2"
             >
               <div className="collapse collapse-title flex justify-between">
-                <span className="text-primary font-medium font-mono text-2xl">{item.name.toLowerCase()}</span>
+                <span className="text-primary flex justify-center items-center font-medium font-mono text-2xl">{item.name}</span>
                 <button
                   onClick={() => {
                     setSelectedItem(item);
