@@ -72,7 +72,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                 <input
                   disabled
                   className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
-                  value={showcase.product.name.toUpperCase()}
+                  value={showcase.product.name}
                 />
               </div>
               <div className="flex flex-col">
@@ -80,7 +80,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                 <input
                   disabled
                   className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
-                  value={showcase.product.category.name.toUpperCase()}
+                  value={showcase.product.category.name}
                 />
               </div>
               <div className="flex flex-col">

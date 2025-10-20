@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddMerch from "../components/AddMerch.jsx";
 import EditMerch from "../components/EditMerch.jsx";
-import config from '../config/config.js';
+import config from "../config/config.js";
 const Merch = () => {
   document.title = "Merch";
   const location = useLocation();
@@ -25,8 +25,36 @@ const Merch = () => {
     }
   };
 
+  const [filtered, setFiltered] = useState([]);
+  const [currCat, setCurrCat] = useState("");
+  const [search, setSearch] = useState("");
+  const filterData = () => {
+    const filter = products.filter((item) => {
+      const matchCategory =
+        currCat === "" || item.product.category?.name === currCat;
+      const matchSearch = item.product.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+    setFiltered(filter);
+  };
+  const [category, setCategory] = useState([]);
+  const fetchCategory = async () => {
+    try {
+      const res = await api.get("/api/category");
+      setCategory(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    filterData();
+  }, [currCat, search, products]);
+
   useEffect(() => {
     fetchProducts();
+    fetchCategory();
   }, []);
 
   return (
@@ -40,16 +68,38 @@ const Merch = () => {
       >
         Add Product to Showcase
       </button>
-
+      <input
+        type="text"
+        placeholder="Search Product"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="input input-bordered w-full max-w-xs ml-4"
+      />
+      <select
+        className="select select-bordered w-full max-w-xs ml-4"
+        defaultValue=""
+        onChange={(e) => setCurrCat(e.target.value)}
+      >
+        <option value="">All Categories</option>
+        {category.map((item) => (
+          <option key={item._id} value={item.name}>
+            {item.name}
+          </option>
+        ))}
+      </select>
       <div className="h-screen rounded-lg p-4 overflow-y-auto flex justify-between gap-4">
         <div className=" w-full">
           <div className="hidden sm:grid sm:grid-cols-4 w-full sm:gap-10 items-center mb-2 px-3">
-            <span className="font-medium  text-center text-primary">Product</span>
+            <span className="font-medium  text-center text-primary">
+              Product
+            </span>
             <span className="font-medium text-center">Quantity</span>
-            <span className="font-medium text-center text-accent">Category</span>
+            <span className="font-medium text-center text-accent">
+              Category
+            </span>
             <span className="font-medium ">Actions</span>
           </div>
-          {products.map((item, index) => (
+          {filtered.map((item, index) => (
             <div
               key={item._id}
               tabIndex={0}

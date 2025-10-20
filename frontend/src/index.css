@@ -16,6 +16,16 @@
   .btn {
     text-transform: lowercase !important;
   }
+
+  select,
+  textarea {
+    text-transform: lowercase !important;
+  }
+
+  input,
+  textarea {
+    text-transform: lowercase !important;
+  }
 }
 
 @layer utilities {
