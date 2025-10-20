@@ -118,9 +118,9 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                     className="text-primary w-1/3 font-bold p-2 border-primary border-2 rounded-xl text-center"
                     value={quant}
                     onChange={(e) => {
-                      if (quant < 1) return;
+                      if (quant < 0) return;
 
-                      handleQuantityChange(parseInt(e.target.value) || 1);
+                      handleQuantityChange(parseInt(e.target.value) || 0);
                     }}
                   />
                   <button

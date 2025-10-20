@@ -14,7 +14,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
         name: "",
       },
       added: false,
-      quantity: 1,
+      quantity: 0,
     },
   ]);
   const [filtered, setFiltered] = useState([]);
@@ -31,7 +31,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
         );
         return {
           ...item,
-          quantity: existingItem?.quantity || 1,
+          quantity: existingItem?.quantity || 0,
           added: !!existingItem,
         };
       });
@@ -50,13 +50,12 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
     }
   };
 
-  const handleAdded = async (item, value, index) => {
-    const newProduct = [...prod];
-    newProduct[index] = {
-      ...item,
-      added: value,
-    };
-    setProd(newProduct);
+  const handleAdded = async (item, value) => {
+    // optimistic update using product id (no reliance on filtered index)
+    setProd((prev) =>
+      prev.map((p) => (p._id === item._id ? { ...p, added: value } : p))
+    );
+
     try {
       if (value) {
         console.log(event);
@@ -77,13 +76,12 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
     }
   };
 
-  const quantityChange = (item, value, index) => {
-    const updatedProd = [...prod];
-    updatedProd[index] = {
-      ...item,
-      quantity: value,
-    };
-    setProd(updatedProd);
+  const quantityChange = (itemId, value) => {
+    setProd((prev) =>
+      prev.map((p) =>
+        p._id === itemId ? { ...p, quantity: Math.max(0, value) } : p
+      )
+    );
   };
   const filterData = () => {
     const filter = prod.filter((item) => {
@@ -163,7 +161,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (item.quantity === 1) return;
-                            quantityChange(item, item.quantity - 1, index);
+                            quantityChange(item._id, item.quantity - 1);
                           }}
                           className="p-1 bg-gray-100 rounded-xl"
                         >
@@ -175,24 +173,17 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                           value={item.quantity}
                           onChange={(e) => {
                             e.stopPropagation();
-                            const updatedProd = [...prod];
-                            updatedProd[index] = {
-                              ...item,
-                              quantity: parseInt(e.target.value) || 1,
-                            };
-                            setProd(updatedProd);
+                            quantityChange(
+                              item._id,
+                              parseInt(e.target.value) || 0
+                            );
                           }}
                           onClick={(e) => e.stopPropagation()}
                         />
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            const updatedProd = [...prod];
-                            updatedProd[index] = {
-                              ...item,
-                              quantity: item.quantity + 1,
-                            };
-                            setProd(updatedProd);
+                            quantityChange(item._id, item.quantity + 1);
                           }}
                           className="p-1 bg-gray-100 rounded-xl"
                         >
@@ -201,7 +192,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleAdded(item, true, index);
+                            handleAdded(item, true);
                           }}
                           className="btn btn-sm text-white btn-primary"
                         >

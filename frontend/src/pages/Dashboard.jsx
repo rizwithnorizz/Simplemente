@@ -140,7 +140,7 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold mb-4 text-pink-600">
             Best Selling Products
           </h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-y-auto">
             {analytics.bestSellers.length !== 0 ? (
               <table className="min-w-full">
                 <thead>
