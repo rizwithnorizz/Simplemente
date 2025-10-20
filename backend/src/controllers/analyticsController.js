@@ -111,18 +111,19 @@ export async function getAnalytics(req, res) {
             event.showcase.forEach(item => {
                 if (item.product) {
                     const productId = item.product._id.toString();
-                    const initialQty = item.quantity;
-
+                    let initialQty = item.quantity;
                     // Find sale for this event and product
                     const sale = sales.find(s => s.event.toString() === event._id.toString());
                     let soldQty = 0;
                     if (sale) {
-                        console.log(sale);
                         const saleItem = sale.showcase.find(si => {
                             if (!si.product) return false;
                             return (si.product._id ? si.product._id.toString() : si.product.toString()) === productId;
                         });
-                        if (saleItem) soldQty = saleItem.quantity;
+                        if (saleItem) {
+                            soldQty = saleItem.quantity;
+                            initialQty += soldQty;
+                        }
                     }
 
                     const remainingQty = initialQty - soldQty;

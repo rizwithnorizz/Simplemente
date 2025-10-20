@@ -111,8 +111,8 @@ const Dashboard = () => {
             </h2>
             <div className="space-y-4 max-h-80  overflow-y-auto">
               {analytics.stockPercentages.length !== 0 ? (
-                analytics.stockPercentages.map((item) => (
-                  <div key={item.name} className="space-y-2">
+                analytics.stockPercentages.map((item, index) => (
+                  <div key={index} className="space-y-2">
                     <div className="flex justify-between">
                       <span className="font-medium">{item.name}</span>
                       <span className="text-gray-500">

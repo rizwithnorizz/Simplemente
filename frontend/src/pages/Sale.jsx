@@ -134,9 +134,37 @@ const Sale = () => {
       toast.error("Error placing order");
     }
   };
+
+  const [currCat, setCurrCat] = useState("");
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState([]);
+  const fetchCategory = async () => {
+    try {
+      const res = await api.get("/api/category");
+      setCategory(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getAllMerch();
+    fetchCategory();
   }, []);
+
+  const filterData = () => {
+    const filter = products.filter((item) => {
+      const matchesSearch = search === "" || item.product.name.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = currCat === "" || item.product.category.name === currCat;
+      return !!matchesSearch && !!matchesCategory;
+    });
+    setFiltered(filter);
+  };
+
+  const [filtered, setFiltered] = useState([]);
+
+  useEffect(() => {
+    filterData();
+  }, [currCat, search, products]);
 
   const handleTotal = () => {
     let total = 0;
@@ -151,14 +179,29 @@ const Sale = () => {
       <div className="flex justify-between gap-4 overflow-y-auto h-screen">
         {/* Product section */}
         <div className="bg-white bg-opacity-50 w-full  rounded-xl">
-          {/* Search */}
-
-          {/* Category Sort */}
-
-          {/* Product Grid */}
-
+          <div className="flex justify-between p-2">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border-accent border rounded-xl bg-transparent p-2 w-full mr-2"
+            />
+            <select
+              className="border-accent border rounded-xl p-2 text-accent"
+              defaultValue="Category"
+              onChange={(e) => setCurrCat(e.target.value)}
+            >
+              <option>Category</option>
+              {category.map((item) => (
+                <option key={item._id} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="grid md:grid-cols-2 grid-cols-1 gap-5 p-4">
-            {products.map((item) => (
+            {filtered.map((item) => (
               <div
                 key={item._id}
                 className="w-full p-4 bg-white shadow-sm rounded-xl hover:shadow-lg cursor-pointer"
