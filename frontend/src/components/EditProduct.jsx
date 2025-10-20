@@ -3,6 +3,7 @@ import api from "../utils/axios.js";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import config from '../config/config.js';
 const EditProduct = ({
   fetchProduct,
   isOpen,
@@ -15,8 +16,8 @@ const EditProduct = ({
   const [formData, setFormData] = useState({
     name: editProd?.name || "",
     category: editProd?.category || "",
-    orig_price: editProd?.orig_price || "",
-    markup: editProd?.markup || "",
+    orig_price: editProd?.orig_price || 0,
+    markup: editProd?.markup || 0,
     image: null,
   });
   const handleSubmit = async () => {
@@ -30,12 +31,13 @@ const EditProduct = ({
         form.append('image', formData.image);
       }
 
-      const res = await api.put(`/api/product/${id}`, form, {
+      await api.put(`/api/product/${id}`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       onConfirm();
+      toast.success("Successfully updated!");
     } catch (error) {
       console.log("Error encountered: ", error);
     }
@@ -57,9 +59,9 @@ const EditProduct = ({
       setFormData({
         name: editProd.name || "",
         category: editProd.category || "",
-        orig_price: editProd.orig_price || "",
-        markup: editProd.markup || "",
-        image: null,
+        orig_price: editProd.orig_price || 0,
+        markup: editProd.markup || 0,
+        image: editProd.image || null,
       });
     }
   }, [editProd]);
@@ -96,7 +98,7 @@ const EditProduct = ({
               />
               {formData.image ? (
                 <img
-                  src={URL.createObjectURL(formData.image)}
+                  src={`${config.imageUrl}/${formData.image}`}
                   alt="Preview"
                   className="w-full h-full object-cover rounded-md"
                 />

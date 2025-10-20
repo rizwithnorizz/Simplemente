@@ -145,7 +145,7 @@ const Inventory = () => {
             </div>
           ))}
         </div>
-        <div className="w-1/2 bg-white rounded-xl p-4 flex justify-center items-center">
+        <div className="w-1/2 h-min bg-white rounded-xl p-4 flex justify-center items-center">
           {focusProduct ? (
             focusProduct.image ? (
               <img
