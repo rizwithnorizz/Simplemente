@@ -4,7 +4,7 @@ import Product from '../models/Product.js';
 import Sale from '../models/Sale.js';
 export async function getAnalytics(req, res) {
     try {
-            const { eventId } = req.query;
+        const { eventId } = req.query;
 
         // Get all invoices
         const invoices = await Invoice.find()
@@ -26,7 +26,7 @@ export async function getAnalytics(req, res) {
                 const eventRevenue = invoice.cart.reduce((total, item) => {
                     return total + (item.price * item.quantity);
                 }, 0);
-                
+
                 if (!eventSales[eventName]) {
                     eventSales[eventName] = 0;
                 }
@@ -91,7 +91,7 @@ export async function getAnalytics(req, res) {
                     productSales[id].name = foundMap[id].name;
                 } else {
                     // product was deleted - set a fallback name
-                    productSales[id].name = `Deleted product (${id.slice(0,6)})`;
+                    productSales[id].name = `Deleted product (${id.slice(0, 6)})`;
                 }
             });
         }
@@ -104,13 +104,15 @@ export async function getAnalytics(req, res) {
 
         // Get all sales
         const sales = await Sale.find().populate('showcase.product');
-
+        const prod = await Product.find();
         // Calculate remaining stock: initial - sold
         const productStock = {};
         events.forEach(event => {
             event.showcase.forEach(item => {
                 if (item.product) {
                     const productId = item.product._id.toString();
+                    const stockRoomProduct = prod.find(p => p._id.toString() === productId);
+                    const stockRoomQuantity = stockRoomProduct.quantity;
                     let initialQty = item.quantity;
                     // Find sale for this event and product
                     const sale = sales.find(s => s.event.toString() === event._id.toString());
@@ -130,9 +132,9 @@ export async function getAnalytics(req, res) {
 
                     if (!productStock[productId]) {
                         productStock[productId] = {
-                            name: (item.product && item.product.name) ? item.product.name : `Deleted product (${productId.slice(0,6)})`,
-                            initialStock: 0,
-                            remaining: 0,
+                            name: (item.product && item.product.name) ? item.product.name : `Deleted product (${productId.slice(0, 6)})`,
+                            initialStock: stockRoomQuantity,
+                            remaining: stockRoomQuantity,
                             sold: 0,
                             eventStock: {}
                         };
@@ -153,6 +155,7 @@ export async function getAnalytics(req, res) {
                 }
             });
         });
+
 
 
         // Transform product sales into sorted array for best sellers

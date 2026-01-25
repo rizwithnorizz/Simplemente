@@ -1,5 +1,7 @@
 import Event from '../models/Event.js';
 import Product from '../models/Product.js';
+import Sale from '../models/Sale.js';
+import Invoice from '../models/Invoice.js';
 
 export async function getAllEvent(_, res) {
     try {
@@ -42,6 +44,10 @@ export async function deleteEvent(req, res) {
         if (!deleteEvent) {
             return res.status(404).json({ message: "Event not found" });
         }
+        // Delete all sales and invoices associated with the event
+        await Sale.deleteMany({ event: id });
+        await Invoice.deleteMany({ event: id });
+
         // Return all showcase product quantities back to main product quantity
         for (const item of deleteEvent.showcase) {
             if (item.product && item.quantity != 0) {
