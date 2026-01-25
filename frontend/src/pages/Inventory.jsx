@@ -96,20 +96,20 @@ const Inventory = () => {
               tabIndex={0}
               className="collapse collapse-sm bg-white mb-2"
             >
-              <div className="collapse collapse-title flex justify-between">
-                <span className="text-primary flex justify-center items-center font-medium font-mono text-2xl">{item.name}</span>
+              <div className="collapse p-4 flex justify-between">
+                <span className="text-primary flex justify-center font-medium font-mono text-2xl">{item.name}</span>
                 <button
                   onClick={() => {
                     setSelectedItem(item);
                     setEditModal(true);
                   }}
-                  className="btn btn-primary text-lg font-mono text-white"
+                  className="btn btn-primary text-white "
                 >
                   Edit
                 </button>
               </div>
               <div className="collapse collapse-content">
-                <table className="w-full text-sm m-2 ">
+                <table className="text-sm m-2 ">
                   <tbody>
                     <tr className="border-b">
                       <td className="py-2 text-gray-600">Category:</td>
@@ -126,10 +126,10 @@ const Inventory = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td className="py-2 text-secondary text-xl font-bold">
+                      <td className="py-2 text-accent text-xl font-bold">
                         PRICE:
                       </td>
-                      <td className="py-2 text-right text-secondary text-xl font-bold">
+                      <td className="py-2 text-right text-accent text-xl font-bold">
                         ₱{item.orig_price}
                       </td>
                     </tr>

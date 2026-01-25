@@ -4,7 +4,7 @@ export async function getAllInvoices(req, res) {
     try {
         const invoices = await Invoice.find()
             .populate({ path: 'event' })
-            .populate({
+                .populate({
                 path: 'cart.product',
                 populate: { path: 'category' }
             });

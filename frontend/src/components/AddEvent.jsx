@@ -34,7 +34,6 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
         addedQuantity: 0,
         added: false,
       }));
-      console.log(productsWithDefaults);
       setProduct(productsWithDefaults);
     } catch (error) {
       console.log(error);
@@ -52,7 +51,6 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
 
   const handleCreateEvent = async () => {
     try {
-      console.log(formData);
       await api.post("/api/event", {
         name: formData.name,
         start_date: new Date(formData.start_date),
@@ -147,7 +145,6 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
           <div className="flex-col flex">
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-pink-500"
             >
               Event Name
             </label>
@@ -157,11 +154,10 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="input input-sm w-full bg-gray-100"
+              className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
             />
             <label
               htmlFor="start_date"
-              className="block text-sm font-medium text-pink-500"
             >
               Start Date
             </label>
@@ -171,11 +167,10 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
               name="start_date"
               value={formData.start_date}
               onChange={handleInputChange}
-              className="input input-sm w-full bg-gray-100"
+              className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
             />
             <label
               htmlFor="end_date"
-              className="block text-sm font-medium text-pink-500"
             >
               End Date
             </label>
@@ -185,12 +180,12 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
               name="end_date"
               value={formData.end_date}
               onChange={handleInputChange}
-              className="input input-sm w-full bg-gray-100"
+              className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
             />
             <div className="md:flex md:justify-between pt-2 pb-2">
               <h2
                 htmlFor="showcase"
-                className="block text-sm font-medium text-pink-500 pt-4"
+                className="block text-md pt-4 underline"
               >
                 Add to Showcase
               </h2>
@@ -202,12 +197,12 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                   onChange={(e) => {
                     setSearch(e.target.value);
                   }}
-                  className="border-accent border rounded-xl bg-transparent p-2 w-full"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 />
                 <select
-                  className="border-accent border rounded-xl p-2 text-accent w-full"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                   defaultValue=""
-                  onChange={(e) => {setCurrCat(e.target.value)}}
+                  onChange={(e) => { setCurrCat(e.target.value) }}
                 >
                   <option value="" >
                     Select Category
@@ -225,16 +220,16 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                 <div
                   key={item._id}
                   tabIndex={index}
-                  className={`collapse collapse-sm border ${ item.added ? "bg-primary bg-opacity-10" : 'border-primary'} mb-1`}
+                  className={`collapse collapse-sm border ${item.added ? "bg-primary bg-opacity-10" : 'border-primary'} mb-1`}
                 >
-                  <div className="collapse-title sm:flex items-center sm:justify-between">
+                  <div className="p-4 sm:flex items-center sm:justify-between">
                     <div className="items-center gap-4 ">
                       <span>{item.name}</span>
                     </div>
-                    <div className="flex sm:items-end gap-2">
+                    <div className="flex sm:items-end gap-4">
                       <span className=" text-primary text-bold pr-2">
-                          {item.category.name}
-                        </span>
+                        {item.category.name}
+                      </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -246,13 +241,13 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
 
                           handleProductChange(item, -1, index);
                         }}
-                        className="p-1 bg-gray-100 rounded-xl"
+                        className="btn btn-sm  btn-accent text-white rounded-lg"
                       >
                         <Minus size={18} />
                       </button>
                       <input
                         type="number"
-                        className="input input-bordered input-sm md:w-14 w-8"
+                        className="input input-bordered input-sm md:w-20 w-8"
                         value={item.addedQuantity}
                         onChange={(e) => {
                           e.stopPropagation();
@@ -267,14 +262,15 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          
-                          if (item.quantity === 0){
+
+                          if (item.quantity === 0) {
                             toast.error("No more stock remaining!");
                             return;
                           }
                           handleProductChange(item, 1, index);
                         }}
-                        className="p-1 bg-gray-100 rounded-xl"
+                        className="btn btn-sm  btn-accent text-white rounded-xl"
+
                       >
                         <Plus size={18} />
                       </button>
@@ -283,9 +279,8 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                         onClick={(e) => {
                           handleAdded(item, !item.added, index);
                         }}
-                        className={`btn btn-sm text-white ${
-                          item.added ? "btn-secondary" : "btn-primary"
-                        }`}
+                        className={`btn btn-sm text-white w-20 ${item.added ? "btn-accent" : "btn-primary"
+                          }`}
                       >
                         {item.added ? "Added" : "Add"}
                       </button>
@@ -296,7 +291,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                       <div className="flex justify-between items-center">
                         Stocks remaining: {item.quantity}
                         <span className="text-sm text-gray-600">
-                          Original Price: ₱{item.orig_price}
+                          Price: ₱{item.orig_price}
                         </span>
                       </div>
                     </div>

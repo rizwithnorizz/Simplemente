@@ -49,7 +49,7 @@ const Category = ({ onClose, onConfirm, isOpen, fetchCategory, category }) => {
             <input
               type="text"
               placeholder="Add new category..."
-              className="w-full rounded-xl p-2 input-primary mb-1 mr-2"
+              className="rounded-xl w-full p-2 input-primary mb-1 mr-2"
               onChange={(e) => {
                 setAddCat(e.target.value);
               }}
@@ -58,8 +58,9 @@ const Category = ({ onClose, onConfirm, isOpen, fetchCategory, category }) => {
               onClick={() => {
                 handleAddCategory();
               }}
+              className="btn btn-sm btn-primary text-white"
             >
-              <Plus className="mb-1" />
+              Add Category
             </button>
           </div>
           <div className="overflow-y-auto max-h-[60vh]">
@@ -76,7 +77,7 @@ const Category = ({ onClose, onConfirm, isOpen, fetchCategory, category }) => {
                     <td>{item.name}</td>
                     <td>
                       <div 
-                      className="btn btn-primary text-white btn-sm"
+                      className="btn btn-accent text-white btn-sm"
                       onClick={() => { handleDelete(item) }}>Delete</div>
                     </td>
                   </tr>

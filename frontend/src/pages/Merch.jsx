@@ -60,33 +60,35 @@ const Merch = () => {
   return (
     <Layout>
       <h1 className="font-bold text-pink-500 text-4xl mb-4">Merch</h1>
-      <button
-        onClick={() => {
-          setMerchModal(true);
-        }}
-        className="btn btn-primary text-white min-w-min ml-4"
-      >
-        Add Product to Showcase
-      </button>
-      <input
-        type="text"
-        placeholder="Search Product"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="input input-bordered w-full max-w-xs ml-4"
-      />
-      <select
-        className="select select-bordered w-full max-w-xs ml-4"
-        defaultValue=""
-        onChange={(e) => setCurrCat(e.target.value)}
-      >
-        <option value="">All Categories</option>
-        {category.map((item) => (
-          <option key={item._id} value={item.name}>
-            {item.name}
-          </option>
-        ))}
-      </select>
+      <div className="flex grid sm:grid-cols-3 grid-cols-1 gap-2">
+        <button
+          onClick={() => {
+            setMerchModal(true);
+          }}
+          className="btn btn-primary text-white"
+        >
+          Add Product to Showcase
+        </button>
+        <input
+          type="text"
+          placeholder="Search Product"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="input input-bordered"
+        />
+        <select
+          className="select select-bordered"
+          defaultValue=""
+          onChange={(e) => setCurrCat(e.target.value)}
+        >
+          <option value="">All Categories</option>
+          {category.map((item) => (
+            <option key={item._id} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="h-screen rounded-lg p-4 overflow-y-auto flex justify-between gap-4">
         <div className=" w-full">
           <div className="hidden sm:grid sm:grid-cols-5 w-full sm:gap-10 items-center mb-2 px-3">
@@ -104,7 +106,7 @@ const Merch = () => {
             <div
               key={item._id}
               tabIndex={0}
-              className="bg-white rounded-xl collapse collapse-sm mb-2"
+              className="bg-white rounded-xl mb-2"
               onFocus={() => setCurrentProduct(item)}
             >
               <div className="p-2 hover:opacity-80 ">
@@ -138,8 +140,8 @@ const Merch = () => {
             </div>
           ))}
         </div>
-        <div className="w-full max-w-md ">
-          <div className="bg-white rounded-xl p-5 flex flex-col justify-center items-center">
+        <div className="w-60 max-w-md pt-7">
+          <div className="bg-white rounded-xl p-2 flex flex-col justify-center items-center">
             {currentProduct ? (
               <>
                 {currentProduct.product.image ? (

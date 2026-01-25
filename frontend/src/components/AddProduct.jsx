@@ -51,7 +51,7 @@ const AddProduct = ({
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      if(category.length === 0) {
+      if (category.length === 0) {
         toast.error("Please add a category first.");
         return;
       }
@@ -63,7 +63,7 @@ const AddProduct = ({
       if (formData.image) {
         form.append('image', formData.image);
       }
-      
+
       await api.post("/api/product/create", form, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -128,10 +128,9 @@ const AddProduct = ({
 
             {/* Product Details Section */}
             <div className="relative h-full w-full">
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Product Name
                 </label>
@@ -141,13 +140,12 @@ const AddProduct = ({
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 />
               </div>
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="category"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Category
                 </label>
@@ -156,7 +154,7 @@ const AddProduct = ({
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 >
                   {category.length > 0 ? (
                     category.map((item) => (
@@ -169,26 +167,9 @@ const AddProduct = ({
                   )}
                 </select>
               </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="markup"
-                  className="block text-sm font-medium text-pink-500"
-                >
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
-                />
-              </div>
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="orig_price"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Price
                 </label>
@@ -198,24 +179,43 @@ const AddProduct = ({
                   name="orig_price"
                   value={formData.orig_price}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="markup"
+                >
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  handleSubmit();
+                  clearFormData();
+                }}
+                disabled={loading}
+                className="btn btn-primary text-white w-full mt-2"
+              >
+                Create
+              </button>
+              <button
+                onClick={() => {
+                  clearFormData();
+                  onClose();
+                }}
+                className="btn btn-accent text-white w-full mt-2">
+                Cancel
+              </button>
             </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex justify-between mt-6 relative">
-            <button
-              onClick={() => {
-                handleSubmit();
-                clearFormData();
-              }}
-              disabled={loading}
-              className="btn btn-primary text-white w-24"
-            >
-              Create
-            </button>
           </div>
         </div>
       </div>

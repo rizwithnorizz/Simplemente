@@ -157,12 +157,12 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                   tabIndex={0}
                   className={`collapse collapse-sm border border-primary mb-1`}
                 >
-                  <div className="collapse-title ">
+                  <div className="p-4">
                     <div className="flex justify-between items-center">
                       <h2>{item.name}</h2>
                       <div className="flex items-center gap-2">
-                        <span className="text-primary">
-                          {item.category?.name}
+                        <span className="text-primary pr-2">
+                          {item.category.name}
                         </span>
                         <button
                           onClick={(e) => {
@@ -173,7 +173,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                             }
                             quantityChange(item._id, -1);
                           }}
-                          className="p-1 bg-gray-100 rounded-xl"
+                          className="btn btn-accent btn-sm text-white"
                         >
                           <Minus size={18} />
                         </button>
@@ -201,7 +201,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
 
                             }
                           }}
-                          className="p-1 bg-gray-100 rounded-xl"
+                          className="btn btn-accent btn-sm text-white"
                         >
                           <Plus size={18} />
                         </button>
@@ -210,7 +210,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                             e.stopPropagation();
                             handleAdded(item, true);
                           }}
-                          className="btn btn-sm text-white btn-primary"
+                          className="btn btn-sm w-20 text-white btn-primary"
                         >
                           Add
                         </button>

@@ -76,7 +76,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
               <img
                 src={`${config.imageUrl}/${showcase.product.image}`}
                 alt={showcase.product.image}
-                className="h-3/4 w-3/4 object-cover rounded-xl"
+                className="w-full h-full object-cover rounded-md"
               />
             ) : (
               <div className="bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
@@ -120,7 +120,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                         return;
                       }
                     }}
-                    className="btn btn-primary btn-sm text-white"
+                    className="btn btn-accent btn-sm text-white"
                   >
                     <Minus size={18} />
                   </button>
@@ -129,6 +129,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                     name="quantity"
                     className="text-primary w-1/3 font-bold p-2 border-primary border rounded-xl text-center"
                     value={quant}
+                    disabled={true}
                     onChange={(e) => {
                       if (quant < 0) return;
 
@@ -145,7 +146,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
 
                       }
                     }}
-                    className="btn btn-primary btn-sm text-white"
+                    className="btn btn-accent btn-sm text-white"
                   >
                     <Plus size={18} />
                   </button>
@@ -163,7 +164,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
               </button>
               <button
                 onClick={handleRemove}
-                className="btn btn-secondary text-white w-full mt-2"
+                className="btn btn-accent text-white w-full mt-2"
               >
                 Remove
               </button>

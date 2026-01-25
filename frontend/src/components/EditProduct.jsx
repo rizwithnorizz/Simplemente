@@ -109,10 +109,9 @@ const EditProduct = ({
               )}
             </div>
             <div className="relative h-full w-full">
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Product Name
                 </label>
@@ -122,13 +121,12 @@ const EditProduct = ({
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 />
               </div>
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="category"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Category
                 </label>
@@ -137,11 +135,8 @@ const EditProduct = ({
                   name="category"
                   value={formData.category._id}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 >
-                  <option value="no-category" disabled>
-                    No category set
-                  </option>
                   {category.length > 0 &&
                     category.map((item) => (
                       <option key={item._id} value={item._id}>
@@ -150,26 +145,9 @@ const EditProduct = ({
                     ))}
                 </select>
               </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="markup"
-                  className="block text-sm font-medium text-pink-500"
-                >
-                  Stock
-                </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
-                />
-              </div>
-              <div className="mb-4">
+              <div>
                 <label
                   htmlFor="orig_price"
-                  className="block text-sm font-medium text-pink-500"
                 >
                   Price
                 </label>
@@ -179,19 +157,35 @@ const EditProduct = ({
                   name="orig_price"
                   value={formData.orig_price}
                   onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
                 />
               </div>
-              <div className="flex justify-between gap-4 pt-4">
+              <div>
+                <label
+                  htmlFor="markup"
+                >
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  className="text-primary font-bold p-2 border-primary border rounded-xl w-full"
+                />
+              </div>
+              
+              <div className="flex flex-col gap-2 pt-2">
                 <button
                   onClick={handleSubmit}
-                  className="btn btn-primary text-white w-1/3"
+                  className="btn btn-primary text-white w-full"
                 >
                   Update
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="btn btn-warning text-white w-1/3"
+                  className="btn btn-accent text-white w-full"
                 >
                   Delete
                 </button>
