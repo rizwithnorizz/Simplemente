@@ -58,10 +58,10 @@ const Invoice = () => {
       <h1 className="font-bold text-pink-500 text-4xl mb-6">Transaction History</h1>
       <select className="select select-bordered w-full max-w-xs mb-6" value={search} onChange={(e) => setSearch(e.target.value)}>
         <option value="">All Events</option>
-        {invoices.map((invoice) => (
-          <option key={invoice._id} value={invoice.event?._id || ''}>
-            {invoice.event?.name || 'N/A'}
-            </option>
+        {[...new Map(invoices.map((invoice) => [invoice.event?._id, invoice.event])).values()].map((event) => (
+          <option key={event?._id} value={event?._id || ''}>
+            {event?.name || 'N/A'}
+          </option>
         ))}
       </select>
       <div className="space-y-6">
@@ -80,27 +80,28 @@ const Invoice = () => {
               <table className="min-w-full table-auto">
                 <thead>
                   <tr className="bg-gray-50">
+                    <th className="px-4 py-2 text-center">Quantity</th>
                     <th className="px-4 py-2 text-left">Product</th>
+                    <th className="px-4 py-2 text-center">Category</th>
                     <th className="px-4 py-2 text-right">Price</th>
-                    <th className="px-4 py-2 text-right">Quantity</th>
                     <th className="px-4 py-2 text-right">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoice.cart.map((item, index) => (
                     <tr key={index} className="border-b">
-                      <td className="px-4 py-2">{item.product?.name || 'N/A'}</td>
+                      <td className="px-4 py-2 text-center">{item.quantity}</td>
+                      <td className="px-4 py-2">{item.product.name}</td>
+                      <td className="px-4 py-2 text-center">{item.product.category.name}</td>
                       <td className="px-4 py-2 text-right">₱{item.price}</td>
-                      <td className="px-4 py-2 text-right">{item.quantity}</td>
                       <td className="px-4 py-2 text-right">₱{item.price * item.quantity}</td>
                     </tr>
                   ))}
-                  <tr className="font-semibold bg-gray-50">
-                    <td colSpan="3" className="px-4 py-2 text-right">Total:</td>
-                    <td className="px-4 py-2 text-right">₱{calculateTotal(invoice.cart)}</td>
-                  </tr>
                 </tbody>
               </table>
+              <div className="flex justify-end">
+                <span className="font-bold">Total: ₱{calculateTotal(invoice.cart)} </span>
+              </div>
             </div>
           </div>
         ))}

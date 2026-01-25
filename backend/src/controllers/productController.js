@@ -16,9 +16,9 @@ export async function getAllProduct(_, res) {
 
 export async function createProduct(req, res) {
   try {
-    const { name, category, orig_price, markup } = req.body;
+    const { name, category, orig_price, quantity } = req.body;
     const image = req.file ? req.file.filename : null;
-    const newProduct = new Product({ name, category, orig_price, markup, image });
+    const newProduct = new Product({ name, category, orig_price, image, quantity });
 
     const saved = await newProduct.save();
     res.status(200).json(saved);
@@ -31,17 +31,16 @@ export async function createProduct(req, res) {
 export async function editProduct(req, res) {
   try {
     const { id } = req.params;
-    const { name, category, orig_price, markup } = req.body;
-
-    if (!name || !category || !orig_price || !markup) {
+    const { name, category, orig_price, quantity } = req.body;
+    if (!name || !category || !orig_price) {
       return res.status(400).json({ message: "Missing required fields" });
     } 
 
     const updateFields = { 
       name, 
       orig_price, 
-      markup, 
       category,
+      quantity,
       ...(req.file && { image: req.file.filename })
     };
 
@@ -64,7 +63,6 @@ export async function editProduct(req, res) {
 
 export async function deleteProduct(req, res) {
   const { id } = req.params;
-  console.log("Deleting");
   try {
     const deleteItem = await Product.findByIdAndDelete(id);
     if (!deleteItem) {

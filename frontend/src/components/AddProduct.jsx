@@ -13,10 +13,12 @@ const AddProduct = ({
   const [formData, setFormData] = useState({
     name: "",
     category: "",
-    orig_price: "",
-    markup: "",
+    orig_price: 0,
+    quantity: 0,
     image: null,
   });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (category.length > 0 && !formData.category) {
@@ -31,8 +33,8 @@ const AddProduct = ({
     setFormData({
       name: "",
       category: category.length > 0 ? category[0]._id : "", // Reset to first category
-      orig_price: "",
-      markup: "",
+      orig_price: 0,
+      quantity: 0,
       image: null,
     });
   };
@@ -47,6 +49,7 @@ const AddProduct = ({
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       if(category.length === 0) {
         toast.error("Please add a category first.");
@@ -56,7 +59,7 @@ const AddProduct = ({
       form.append('name', formData.name);
       form.append('category', formData.category);
       form.append('orig_price', formData.orig_price);
-      form.append('markup', formData.markup);
+      form.append('quantity', formData.quantity);
       if (formData.image) {
         form.append('image', formData.image);
       }
@@ -70,9 +73,11 @@ const AddProduct = ({
       fetchCategory();
       fetchProduct();
       toast.success("Added product successfully!");
+      setLoading(false);
     } catch (error) {
       toast.error("Error: ", error);
       console.error("Error creating product:", error);
+      setLoading(false);
     }
   };
 
@@ -166,32 +171,32 @@ const AddProduct = ({
               </div>
               <div className="mb-4">
                 <label
-                  htmlFor="orig_price"
+                  htmlFor="markup"
                   className="block text-sm font-medium text-pink-500"
                 >
-                  Original Price
+                  Quantity
                 </label>
                 <input
                   type="number"
-                  id="orig_price"
-                  name="orig_price"
-                  value={formData.orig_price}
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
                   onChange={handleInputChange}
                   className="input input-sm w-full bg-gray-100"
                 />
               </div>
               <div className="mb-4">
                 <label
-                  htmlFor="markup"
+                  htmlFor="orig_price"
                   className="block text-sm font-medium text-pink-500"
                 >
-                  Markup
+                  Price
                 </label>
                 <input
                   type="number"
-                  id="markup"
-                  name="markup"
-                  value={formData.markup}
+                  id="orig_price"
+                  name="orig_price"
+                  value={formData.orig_price}
                   onChange={handleInputChange}
                   className="input input-sm w-full bg-gray-100"
                 />
@@ -206,6 +211,7 @@ const AddProduct = ({
                 handleSubmit();
                 clearFormData();
               }}
+              disabled={loading}
               className="btn btn-primary text-white w-24"
             >
               Create

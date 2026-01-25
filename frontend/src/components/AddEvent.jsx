@@ -8,12 +8,11 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
     {
       name: "",
       orig_price: "",
-      markup: "",
       category: {
         name: ""
       },
       added: false,
-      quantity: 1,
+      quantity: 0,
     },
   ]);
   const [filtered, setFiltered] = useState([]);
@@ -32,9 +31,10 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
       const res = await api.get("/api/product");
       const productsWithDefaults = res.data.map((item) => ({
         ...item,
-        quantity: 1,
+        addedQuantity: 0,
         added: false,
       }));
+      console.log(productsWithDefaults);
       setProduct(productsWithDefaults);
     } catch (error) {
       console.log(error);
@@ -79,9 +79,11 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
     const newProduct = [...product];
     newProduct[index] = {
       ...item,
-      quantity: value,
+      addedQuantity: item.addedQuantity + value,
+      quantity: item.quantity - value
     };
     setProduct(newProduct);
+
   };
 
   const handleAdded = (item, value, index) => {
@@ -98,7 +100,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
           ...prev.showcase,
           {
             product: item._id,
-            quantity: item.quantity,
+            addedQuantity: item.addedQuantity,
           },
         ],
       }));
@@ -230,13 +232,19 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                       <span>{item.name}</span>
                     </div>
                     <div className="flex sm:items-end gap-2">
+                      <span className=" text-primary text-bold pr-2">
+                          {item.category.name}
+                        </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
 
-                          if (item.quantity === 0) return;
+                          if (item.addedQuantity === 0) {
+                            toast.error("Quantity is zero!");
+                            return;
+                          }
 
-                          handleProductChange(item, item.quantity - 1, index);
+                          handleProductChange(item, -1, index);
                         }}
                         className="p-1 bg-gray-100 rounded-xl"
                       >
@@ -245,7 +253,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                       <input
                         type="number"
                         className="input input-bordered input-sm md:w-14 w-8"
-                        value={item.quantity}
+                        value={item.addedQuantity}
                         onChange={(e) => {
                           e.stopPropagation();
 
@@ -259,8 +267,12 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-
-                          handleProductChange(item, item.quantity + 1, index);
+                          
+                          if (item.quantity === 0){
+                            toast.error("No more stock remaining!");
+                            return;
+                          }
+                          handleProductChange(item, 1, index);
                         }}
                         className="p-1 bg-gray-100 rounded-xl"
                       >
@@ -282,9 +294,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
                   <div className="collapse-content">
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">
-                          Category: {item.category?.name || "No category"}
-                        </span>
+                        Stocks remaining: {item.quantity}
                         <span className="text-sm text-gray-600">
                           Original Price: ₱{item.orig_price}
                         </span>

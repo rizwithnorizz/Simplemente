@@ -15,13 +15,14 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    markup: {
-        type: Number,
-        required: true
-    },
     image: {
         type: String,
         default: null
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        default: 0
     },
 }, { timestamps: true });
 

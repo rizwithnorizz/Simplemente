@@ -17,7 +17,7 @@ const EditProduct = ({
     name: editProd?.name || "",
     category: editProd?.category || "",
     orig_price: editProd?.orig_price || 0,
-    markup: editProd?.markup || 0,
+    quantity: editProd?.quantity || 0,
     image: null,
   });
   const handleSubmit = async () => {
@@ -26,7 +26,7 @@ const EditProduct = ({
       form.append('name', formData.name);
       form.append('category', formData.category._id);
       form.append('orig_price', formData.orig_price);
-      form.append('markup', formData.markup);
+      form.append('quantity', formData.quantity);
       if (formData.image) {
         form.append('image', formData.image);
       }
@@ -60,7 +60,7 @@ const EditProduct = ({
         name: editProd.name || "",
         category: editProd.category || "",
         orig_price: editProd.orig_price || 0,
-        markup: editProd.markup || 0,
+        quantity: editProd.quantity || 0,
         image: editProd.image || null,
       });
     }
@@ -152,10 +152,26 @@ const EditProduct = ({
               </div>
               <div className="mb-4">
                 <label
+                  htmlFor="markup"
+                  className="block text-sm font-medium text-pink-500"
+                >
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  className="input input-sm w-full bg-gray-100"
+                />
+              </div>
+              <div className="mb-4">
+                <label
                   htmlFor="orig_price"
                   className="block text-sm font-medium text-pink-500"
                 >
-                  Original Price
+                  Price
                 </label>
                 <input
                   type="number"
@@ -166,36 +182,19 @@ const EditProduct = ({
                   className="input input-sm w-full bg-gray-100"
                 />
               </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="markup"
-                  className="block text-sm font-medium text-pink-500"
+              <div className="flex justify-between gap-4 pt-4">
+                <button
+                  onClick={handleSubmit}
+                  className="btn btn-primary text-white w-1/3"
                 >
-                  Markup
-                </label>
-                <input
-                  type="number"
-                  id="markup"
-                  name="markup"
-                  value={formData.markup}
-                  onChange={handleInputChange}
-                  className="input input-sm w-full bg-gray-100"
-                />
-
-                <div className="flex justify-between gap-4 pt-4">
-                  <button
-                    onClick={handleSubmit}
-                    className="btn btn-primary text-white w-1/3"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="btn btn-warning text-white w-1/3"
-                  >
-                    Delete
-                  </button>
-                </div>
+                  Update
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="btn btn-warning text-white w-1/3"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>

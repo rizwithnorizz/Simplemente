@@ -9,12 +9,11 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
       _id: "",
       name: "",
       orig_price: "",
-      markup: "",
       category: {
         name: "",
       },
       added: false,
-      quantity: 0,
+      quantity: "",
     },
   ]);
   const [filtered, setFiltered] = useState([]);
@@ -31,7 +30,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
         );
         return {
           ...item,
-          quantity: existingItem?.quantity || 0,
+          addedQuantity: existingItem?.quantity || 0,
           added: !!existingItem,
         };
       });
@@ -58,10 +57,15 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
 
     try {
       if (value) {
-        console.log(event);
         await api.post(`/api/merch/${event}`, {
           product: item._id,
-          quantity: item.quantity,
+          quantity: item.addedQuantity,
+        });
+        await api.put(`/api/product/${item._id}`, {
+          name: item.name,
+          category: item.category,
+          orig_price: item.orig_price,
+          quantity: item.quantity
         });
         toast.success("Successfully added!");
       } else {
@@ -72,14 +76,14 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
       }
       onConfirm();
     } catch (error) {
-      toast.error("Error removing product");
+      toast.error("Error updating product");
     }
   };
 
   const quantityChange = (itemId, value) => {
     setProd((prev) =>
       prev.map((p) =>
-        p._id === itemId ? { ...p, quantity: Math.max(0, value) } : p
+        p._id === itemId ? { ...p, addedQuantity: Math.max(0, p.addedQuantity + value), quantity: Math.max(0, p.quantity - value) } : p
       )
     );
   };
@@ -157,11 +161,17 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                     <div className="flex justify-between items-center">
                       <h2>{item.name}</h2>
                       <div className="flex items-center gap-2">
+                        <span className="text-primary">
+                          {item.category?.name}
+                        </span>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (item.quantity === 1) return;
-                            quantityChange(item._id, item.quantity - 1);
+                            if (item.addedQuantity === 0){
+                              toast.error("Item quantity is zero");
+                              return;
+                            }
+                            quantityChange(item._id, -1);
                           }}
                           className="p-1 bg-gray-100 rounded-xl"
                         >
@@ -170,7 +180,7 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                         <input
                           type="number"
                           className="input input-bordered input-sm w-20"
-                          value={item.quantity}
+                          value={item.addedQuantity}
                           onChange={(e) => {
                             e.stopPropagation();
                             quantityChange(
@@ -183,7 +193,13 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            quantityChange(item._id, item.quantity + 1);
+                            if (item.quantity <= 0) {
+                              toast.error("No more stocks remaining");
+                              return;
+                            } else {
+                              quantityChange(item._id, 1);
+
+                            }
                           }}
                           className="p-1 bg-gray-100 rounded-xl"
                         >
@@ -205,10 +221,10 @@ const AddMerch = ({ isOpen, onClose, onConfirm, showcase, event }) => {
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">
-                          Category: {item.category?.name || "No category"}
+                          {item.quantity} items remaining
                         </span>
                         <span className="text-sm text-gray-600">
-                          Original Price: ₱{item.orig_price}
+                          Price: ₱{item.orig_price}
                         </span>
                       </div>
                     </div>

@@ -125,7 +125,7 @@ const EditEvent = ({ isOpen, onClose, onConfirm, event }) => {
             <button onClick={() => {updateEvent()}} className="btn btn-primary text-white mt-4">
               Save Changes
             </button>
-            <button className="btn btn-secondary text-white mt-4 ml-2" onClick={() => {deleteEvent()}}>
+            <button className="btn btn-secondary text-white mt-4" onClick={() => {deleteEvent()}}>
               Delete
             </button>
           </div>

@@ -120,15 +120,9 @@ const Inventory = () => {
                       </td>
                     </tr>
                     <tr className="border-b">
-                      <td className="py-2 text-gray-600">Original:</td>
+                      <td className="py-2 text-gray-600">Stock:</td>
                       <td className="py-2 text-right font-medium">
-                        ₱{item.orig_price}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-2 text-gray-600">Markup:</td>
-                      <td className="py-2 text-right font-medium">
-                        ₱{item.markup}
+                        {item.quantity}
                       </td>
                     </tr>
                     <tr>
@@ -136,7 +130,7 @@ const Inventory = () => {
                         PRICE:
                       </td>
                       <td className="py-2 text-right text-secondary text-xl font-bold">
-                        ₱{item.markup + item.orig_price}
+                        ₱{item.orig_price}
                       </td>
                     </tr>
                   </tbody>

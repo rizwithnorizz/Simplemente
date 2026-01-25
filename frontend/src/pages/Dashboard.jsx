@@ -157,8 +157,8 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {analytics?.bestSellers.map((product) => (
-                    <tr key={product.name}>
+                  {analytics?.bestSellers.map((product, idx) => (
+                    <tr key={idx}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {product.name}
                       </td>

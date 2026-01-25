@@ -89,15 +89,16 @@ const Merch = () => {
       </select>
       <div className="h-screen rounded-lg p-4 overflow-y-auto flex justify-between gap-4">
         <div className=" w-full">
-          <div className="hidden sm:grid sm:grid-cols-4 w-full sm:gap-10 items-center mb-2 px-3">
+          <div className="hidden sm:grid sm:grid-cols-5 w-full sm:gap-10 items-center mb-2 px-3">
+            <span className="font-medium text-center">Quantity</span>
             <span className="font-medium  text-center text-primary">
               Product
             </span>
-            <span className="font-medium text-center">Quantity</span>
             <span className="font-medium text-center text-accent">
               Category
             </span>
-            <span className="font-medium ">Actions</span>
+            <span className="font-medium text-center text-primary">Price</span>
+            <span className="font-medium text-center">Actions</span>
           </div>
           {filtered.map((item, index) => (
             <div
@@ -106,17 +107,21 @@ const Merch = () => {
               className="bg-white rounded-xl collapse collapse-sm mb-2"
               onFocus={() => setCurrentProduct(item)}
             >
-              <div className="collapse-title">
-                <div className="sm:grid sm:grid-cols-4 flex flex-col sm:gap-10 items-center">
-                  <span className="font-medium text-center text-primary">
-                    {item.product.name.toUpperCase()}
-                  </span>
+              <div className="p-2 hover:opacity-80 ">
+                <div className="sm:grid sm:grid-cols-5 flex flex-col sm:gap-10 items-center">
+
                   <span className="font-medium text-center ">
                     {item.quantity}
+                  </span>
+                  <span className="font-medium text-center text-primary">
+                    {item.product.name.toUpperCase()}
                   </span>
 
                   <span className="font-medium text-center text-accent">
                     {item.product.category?.name || "No category"}
+                  </span>
+                  <span className="font-medium text-center text-primary">
+                    ₱{item.product.orig_price || 0}
                   </span>
                   <button
                     onClick={(e) => {
@@ -129,22 +134,7 @@ const Merch = () => {
                   </button>
                 </div>
               </div>
-              <div className="collapse-content">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600 flex flex-col items-center">
-                    <span className="font-bold text-primary underline">
-                      ₱{item.product.orig_price}
-                    </span>
-                    Original Price
-                  </span>
-                  <span className="text-sm text-gray-600 flex flex-col items-center">
-                    <span className="font-bold text-primary underline">
-                      ₱{item.product.markup}
-                    </span>
-                    Markup
-                  </span>
-                </div>
-              </div>
+
             </div>
           ))}
         </div>

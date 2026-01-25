@@ -206,16 +206,20 @@ const Sale = () => {
                 key={item._id}
                 className="w-full p-4 bg-white shadow-sm rounded-xl hover:shadow-lg cursor-pointer"
               >
-                <div className="flex flex-col ">
-                  <span className="text-xs w-fit p-1 rounded-xl border border-accent text-accent">
-                    {item.product.category.name}
-                  </span>
-                  <span className="text-primary font-bold">
-                    {item.product.name.toUpperCase()}
-                  </span>
-                  <span className="text-accent font-bold text-4xl">
-                    {`₱` + (item.product.orig_price + item.product.markup)}
-                  </span>
+                <div className="flex flex-col">
+                  <div className="flex justify-between mb-2">
+                    <div className="flex flex-col">
+                      <span className="text-xs w-fit p-1 rounded-xl border border-accent text-accent">
+                        {item.product.category.name}
+                      </span>
+                      <span className="text-primary font-bold">
+                        {item.product.name.toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-accent font-bold text-4xl">
+                      ₱{item.product.orig_price}
+                    </span>
+                  </div>
                   <div className="p-2 mb-2 bg-accent bg-opacity-10 rounded-xl">
                     <span className="text-primary font-medium text-sm">
                       Stock:{" "}
@@ -254,12 +258,19 @@ const Sale = () => {
                   key={item.product}
                   className="flex flex-col bg-white shadow-md  hover:shadow-xl rounded-xl p-4 mb-2 w-full"
                 >
-                  <span className="text-primary font-bold">
-                    {item.name.toUpperCase()}
-                  </span>
-                  <span className="text-accent font-bold text-4xl">
-                    {`₱` + item.price * item.quantity}
-                  </span>
+                  <div className="flex justify-between mb-2">
+                    <div className="flex flex-col">
+                      <span className="text-xs w-fit p-1 rounded-xl border border-accent text-accent">
+                        {item.product.category.name}
+                      </span>
+                      <span className="text-primary font-bold">
+                        {item.name.toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="text-accent font-bold text-4xl">
+                      {`₱` + item.price * item.quantity}
+                    </span>
+                  </div>
                   <div className="flex justify-center items-center gap-2">
                     <button
                       onClick={() => {

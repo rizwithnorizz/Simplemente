@@ -5,25 +5,41 @@ import toast from "react-hot-toast";
 import config from "../config/config.js";
 const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
   const [quant, setQuantity] = useState(0);
+  const [loading, setLoading] = useState(false);
   const handleUpdate = async () => {
+    setLoading(true);
     try {
+      await api.put(`/api/product/${showcase.product._id}`, {
+        name: showcase.product.name,
+        category: showcase.product.category,
+        orig_price: showcase.product.orig_price,
+        quantity: showcase.product.quantity
+      });
       await api.put(`/api/merch/${event}`, {
         product: showcase._id,
         quantity: quant,
       });
       toast.success("Successfully updated!");
       onConfirm();
+      setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Error, could not update");
+      setLoading(true);
     }
+    
   };
 
   const handleRemove = async () => {
-    console.log(showcase);
     try {
       await api.delete(`/api/merch/${event}`, {
         data: { product: showcase.product._id },
+      });
+      await api.put(`/api/product/${showcase.product._id}`, {
+        name: showcase.product.name,
+        category: showcase.product.category,
+        orig_price: showcase.product.orig_price,
+        quantity: quant + showcase.product.quantity
       });
       toast.success("Successfully removed!");
       onConfirm();
@@ -39,7 +55,8 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
   }, [showcase]);
 
   const handleQuantityChange = (value) => {
-    setQuantity(value);
+    setQuantity(quant + value);
+    showcase.product.quantity = showcase.product.quantity - value;
   };
   if (!isOpen) return null;
   return (
@@ -71,7 +88,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                 <span>Product Name</span>
                 <input
                   disabled
-                  className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl"
                   value={showcase.product.name}
                 />
               </div>
@@ -79,24 +96,16 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                 <span>Category</span>
                 <input
                   disabled
-                  className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl"
                   value={showcase.product.category.name}
                 />
               </div>
               <div className="flex flex-col">
-                <span>Original Price</span>
+                <span>Price</span>
                 <input
                   disabled
-                  className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
+                  className="text-primary font-bold p-2 border-primary border rounded-xl"
                   value={` ₱` + showcase.product.orig_price}
-                />
-              </div>
-              <div className="flex flex-col mt-2">
-                <span>Markup Price</span>
-                <input
-                  disabled
-                  className="text-primary font-bold p-2 border-primary border-2 rounded-xl"
-                  value={` ₱` + showcase.product.markup}
                 />
               </div>
               <div className="flex flex-col mb-2">
@@ -104,9 +113,12 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                 <div className="flex gap-4 items-center justify-center">
                   <button
                     onClick={() => {
-                      if (quant === 1) return;
-
-                      handleQuantityChange(quant - 1);
+                      if (quant > 0){
+                        handleQuantityChange(-1);
+                      } else { 
+                        toast.error("Item quantity is zero");
+                        return;
+                      }
                     }}
                     className="btn btn-primary btn-sm text-white"
                   >
@@ -115,7 +127,7 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                   <input
                     type="number"
                     name="quantity"
-                    className="text-primary w-1/3 font-bold p-2 border-primary border-2 rounded-xl text-center"
+                    className="text-primary w-1/3 font-bold p-2 border-primary border rounded-xl text-center"
                     value={quant}
                     onChange={(e) => {
                       if (quant < 0) return;
@@ -125,7 +137,13 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                   />
                   <button
                     onClick={() => {
-                      handleQuantityChange(quant + 1);
+                      if (showcase.product.quantity <= 0){
+                        toast.error("No more stocks left");
+                        return;
+                      } else {
+                      handleQuantityChange(1);
+
+                      }
                     }}
                     className="btn btn-primary btn-sm text-white"
                   >
@@ -133,9 +151,13 @@ const EditMerch = ({ isOpen, onConfirm, onClose, showcase, event }) => {
                   </button>
                 </div>
               </div>
+              <span className="flex justify-center items-center mb-2 text-primary underline">
+                {showcase.product.quantity} items remaining
+              </span>
               <button
                 onClick={handleUpdate}
                 className="btn btn-primary text-white w-full"
+                disabled={loading}
               >
                 Update
               </button>
