@@ -235,7 +235,7 @@ const Sale = () => {
                         addToCart({
                           name: item.product.name,
                           product: item._id,
-                          price: item.product.orig_price + item.product.markup,
+                          price: item.product.orig_price,
                           quantity: 1,
                         })
                       }

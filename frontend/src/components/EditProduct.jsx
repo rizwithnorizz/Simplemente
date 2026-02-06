@@ -162,7 +162,7 @@ const EditProduct = ({
               </div>
               <div>
                 <label
-                  htmlFor="markup"
+                  htmlFor="quantity"
                 >
                   Stock
                 </label>

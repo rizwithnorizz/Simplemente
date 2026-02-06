@@ -184,7 +184,7 @@ const AddProduct = ({
               </div>
               <div>
                 <label
-                  htmlFor="markup"
+                  htmlFor="quantity"
                 >
                   Quantity
                 </label>
