@@ -154,7 +154,7 @@ const Sale = () => {
   const filterData = () => {
     const filter = products.filter((item) => {
       const matchesSearch = search === "" || item.product.name.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = currCat === "" || item.product.category.name === currCat;
+      const matchesCategory = currCat === "" || currCat === "Category" || item.product.category.name === currCat;
       return !!matchesSearch && !!matchesCategory;
     });
     setFiltered(filter);

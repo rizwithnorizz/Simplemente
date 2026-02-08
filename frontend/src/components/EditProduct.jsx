@@ -24,13 +24,12 @@ const EditProduct = ({
     try {
       const form = new FormData();
       form.append('name', formData.name);
-      form.append('category', formData.category._id);
+      form.append('category', formData.category);
       form.append('orig_price', formData.orig_price);
       form.append('quantity', formData.quantity);
       if (formData.image) {
         form.append('image', formData.image);
       }
-
       await api.put(`/api/product/${id}`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
