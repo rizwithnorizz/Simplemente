@@ -98,7 +98,7 @@ const AddEvent = ({ isOpen, onClose, onConfirm }) => {
           ...prev.showcase,
           {
             product: item._id,
-            addedQuantity: item.addedQuantity,
+            quantity: item.addedQuantity,
           },
         ],
       }));

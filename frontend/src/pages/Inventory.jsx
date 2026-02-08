@@ -11,6 +11,7 @@ import EditProduct from "../components/EditProduct.jsx";
 const Inventory = () => {
   document.title = "Inventory";
   const [currCat, setCurrCat] = useState("");
+  const [searchProduct, setSearchProduct] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProd, setFilter] = useState([]);
   const [category, setCategory] = useState([]);
@@ -40,10 +41,10 @@ const Inventory = () => {
 
   const filterData = () => {
     const filtered = products.filter((item) => {
-      if (currCat === "" || currCat == "Category") {
-        return true;
-      }
-      return item.category && item.category.name === currCat;
+      const categoryMatch =
+        currCat === "" || currCat == "Category" || (item.category && item.category.name === currCat);
+      const nameMatch = item.name.toLowerCase().includes(searchProduct.toLowerCase());
+      return categoryMatch && nameMatch;
     });
     setFilter(filtered);
   };
@@ -55,7 +56,7 @@ const Inventory = () => {
 
   useEffect(() => {
     filterData();
-  }, [currCat, products]);
+  }, [currCat, products, searchProduct]);
 
   return (
     <Layout>
@@ -66,6 +67,13 @@ const Inventory = () => {
       >
         Add new Product
       </div>
+      <input
+        type="text"
+        placeholder="Search product name..."
+        className="input input-bordered input-md ml-2"
+        value={searchProduct}
+        onChange={(e) => setSearchProduct(e.target.value)}
+      />
       <select
         className="select select-md select-accent ml-2"
         defaultValue="Category"
